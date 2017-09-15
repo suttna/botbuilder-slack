@@ -1,0 +1,42 @@
+{
+  "name": "botbuilder-slack",
+  "version": "1.1.1",
+  "description": "Slack Connector for botbuilder. Compatibe with Microsoft Slack connector.",
+  "main": "lib/index.js",
+  "repository": "https://github.com/suttna/botbuilder-slack",
+  "author": "Martin Fernandez <fmartin91@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "node_modules/.bin/jest --config jest.json --forceExit --runInBand --verbose",
+    "build": "yarn lint && tsc",
+    "watch": "tsc --watch",
+    "lint": "tslint 'src/**/*.ts' '__tests__/**/*.ts'",
+    "lint:fix": "tslint 'src/**/*.ts' '__tests__/**/*.ts' --fix",
+    "ci": "yarn lint && yarn test"
+  },
+  "keywords": [
+    "bot",
+    "node",
+    "botframework",
+    "botbuilder",
+    "slack",
+    "connector"
+  ],
+  "dependencies": {
+    "@slack/client": "^3.13.0",
+    "botbuilder": "^3.9.1"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.11",
+    "@types/jest": "^20.0.8",
+    "@types/nock": "^8.2.1",
+    "@types/node": "^8.0.28",
+    "@types/qs": "^6.5.0",
+    "@types/restify": "^5.0.3",
+    "jest": "^21.1.0",
+    "nock": "^9.0.14",
+    "ts-jest": "^21.0.1",
+    "tslint": "^5.7.0",
+    "typescript": "^2.5.2"
+  }
+}

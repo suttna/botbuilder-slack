@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "target": "es2017",
+    "lib": ["es6"],
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "strictNullChecks": false,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "lib",
+    "baseUrl": "."
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}
