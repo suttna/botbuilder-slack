@@ -3,7 +3,7 @@
     "module": "commonjs",
     "declaration": true,
     "target": "es2017",
-    "lib": ["es6"],
+    "lib": ["es7"],
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "strictNullChecks": false,

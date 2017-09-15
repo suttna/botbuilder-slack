@@ -3,6 +3,7 @@
   "version": "1.1.1",
   "description": "Slack Connector for botbuilder. Compatibe with Microsoft Slack connector.",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "repository": "https://github.com/suttna/botbuilder-slack",
   "author": "Martin Fernandez <fmartin91@gmail.com>",
   "license": "MIT",
@@ -12,7 +13,8 @@
     "watch": "tsc --watch",
     "lint": "tslint 'src/**/*.ts' '__tests__/**/*.ts'",
     "lint:fix": "tslint 'src/**/*.ts' '__tests__/**/*.ts' --fix",
-    "ci": "yarn lint && yarn test"
+    "ci": "yarn lint && yarn test",
+    "prepublish": "yarn build"
   },
   "keywords": [
     "bot",
