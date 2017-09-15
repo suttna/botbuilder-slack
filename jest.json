@@ -4,7 +4,7 @@
   "coverageDirectory": "coverage",
   "coverageReporters": ["html"],
   "transform": {
-    ".(js|ts)": "<rootDir>/../../node_modules/ts-jest/preprocessor.js"
+    ".(js|ts)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
   },
   "moduleFileExtensions": [
     "ts",
