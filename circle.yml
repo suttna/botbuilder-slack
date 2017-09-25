@@ -5,6 +5,8 @@ machine:
     PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
 
 dependencies:
+  pre:
+    - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
   override:
     - yarn
   cache_directories:
@@ -13,3 +15,14 @@ dependencies:
 test:
   override:
     - yarn ci
+
+deployment:
+  next:
+    branch: master
+    commands:
+      - git config --global -l
+      - git config --global user.email circleci@suttna.com
+      - git config --global user.name CircleCI
+      - npm version prerelease
+      - npm publish --tag next
+      - git push --follow-tags
