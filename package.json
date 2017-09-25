@@ -1,6 +1,6 @@
 {
   "name": "botbuilder-slack",
-  "version": "0.0.2-beta.36",
+  "version": "0.0.2-beta.37",
   "description": "Slack Connector for botbuilder. Compatibe with Microsoft Slack connector.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
