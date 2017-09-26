@@ -1,7 +1,7 @@
-import { IMessage } from "botbuilder"
+import { IEvent, IMessage } from "botbuilder"
 import "jest"
 import { ISlackAddress } from "../../src/slack_connector"
-import { defaultInteractiveMessageEnvelope, defaultMessageEnvelope } from "./defaults"
+import { defaultInteractiveMessageEnvelope, defaultMessageEnvelope, defaultTeam } from "./defaults"
 
 export function expectedMessage(event: ISlackMessageEvent, mentions: string[] = []): IMessage {
   const user = { id: `${event.user}:${defaultMessageEnvelope.team_id}` }
@@ -44,7 +44,42 @@ export function expectedMessage(event: ISlackMessageEvent, mentions: string[] = 
   }
 }
 
-export function expectedEvent(event: ISlackEvent, isBotTheUser: boolean): IMessage {
+export function expectedCommandEvent(envelope: ISlackCommandEnvelope): IEvent {
+  const bot = {
+    id: "BXXX:TXXX",
+    name: "test_bot",
+  }
+
+  const user = {
+    id: `${envelope.user_id}:${envelope.team_id}`,
+  }
+
+  const conversation = {
+    id: `BXXX:TXXX:${envelope.channel_id}`,
+    isGroup: true,
+  }
+
+  return {
+    type: "slackCommand",
+    source: "slack",
+    agent: "botbuilder",
+    user,
+    sourceEvent: {
+      SlackMessage: {
+        ...envelope,
+      },
+      ApiToken: "XXX",
+    },
+    address: {
+      channelId: "slack",
+      user,
+      bot,
+      conversation,
+    } as ISlackAddress,
+  } as IEvent
+}
+
+export function expectedConversationUpdateEvent(event: ISlackEvent, isBotTheUser: boolean): IEvent {
   const bot = {
     id: "BXXX:TXXX",
     name: "test_bot",
@@ -71,8 +106,6 @@ export function expectedEvent(event: ISlackEvent, isBotTheUser: boolean): IMessa
     type: "conversationUpdate",
     source: "slack",
     agent: "botbuilder",
-    attachments: [],
-    entities: [],
     timestamp: event.event_ts,
     user,
     sourceEvent: {
@@ -89,7 +122,7 @@ export function expectedEvent(event: ISlackEvent, isBotTheUser: boolean): IMessa
       conversation,
     } as ISlackAddress,
     ...extraAttributes,
-  }
+  } as IEvent
 }
 
 export function expectedInteractiveMessage(action: any): IMessage {

@@ -39,6 +39,10 @@ The current implementation of BotFramework limits the events that you can receiv
 
 > Note: All this events are emitted as conversationUpdate events. Be careful with the user property of the address. For `member_joined_channel` and `member_left_channel` the user in the address is the user that joined or left the channel. For the other events the user is the bot for the moment.
 
+### Commands
+
+You can setup slack commands and use them with your bot. When configuring commands, your bot will emit a new event with type `slackCommand`.
+
 ## Compatibility
 
 The idea of the initial implementation is that you can easily migrate from running Slack with BotFramework. This connector is almost 100% compatible. A few small but important differences:
@@ -83,6 +87,10 @@ You need to setup a URL that will listen for this events. Look at the usage exam
 
 You need to setup a URL that will listen for interactive message callbacks. Look at the usage example to have a better understanding.
 
+### Commands
+
+You need to setup a URL that will listen for commands. Look at the usage example to have a better understanding.
+
 ## Usage
 
 ```javascript
@@ -113,6 +121,9 @@ server.post('/slack/events', connector.listenEvents())
 
 // Attach listener for interactive messages. You need to configure this url in Slack website
 server.post('/slack/interactive', connector.listenInteractiveMessages())
+
+// Attach listener for interactive messages. You need to configure this url in Slack website
+server.post('/slack/commands', connector.listenCommands())
 ```
 
 ## Help

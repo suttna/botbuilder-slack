@@ -40,6 +40,25 @@ export function dispatchEventEnvelop(
 }
 
 /**
+ * Dispatch the given command envelope to the connector.
+ */
+export function dispatchCommandEnvelop(
+  connector: SlackConnector,
+  envelope: ISlackCommandEnvelope,
+  endMock: jest.Mock<void>,
+  next: () => void) {
+  const requestMock = jest.fn<Request>(() => ({
+    params: envelope,
+  }))
+
+  const responseMock = jest.fn<Response>(() => ({
+    end: endMock,
+  }))
+
+  connector.listenCommands()(new requestMock(), new responseMock(), next)
+}
+
+/**
  * Dispatch the given interactive message action to the connector using the defaultInteractiveMessageEnvelope.
  */
 export function dispatchInteractiveMessageAction(

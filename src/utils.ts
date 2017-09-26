@@ -1,5 +1,5 @@
 import { ChatPostMessageParams, MessageAttachment } from "@slack/client"
-import { IIdentity, IMessage } from "botbuilder"
+import { IEvent, IIdentity, IMessage } from "botbuilder"
 import { CONVERSATION_UPDATE_EVENTS } from "./constants"
 import { ISlackAddress } from "./slack_connector"
 
@@ -40,6 +40,35 @@ export function extractMentions(text: string, teamId: string, botId: string, bot
 
     return mention
   })
+}
+
+export function buildCommandEvent(
+  envelope: ISlackCommandEnvelope,
+  token: string,
+  botIdentifier: string,
+  botName: string,
+): IEvent {
+  const address = buildAddress(
+    envelope.team_id,
+    envelope.user_id,
+    envelope.channel_id,
+    botIdentifier,
+    botName,
+  )
+
+  return {
+    type: "slackCommand",
+    source: "slack",
+    agent: "botbuilder",
+    sourceEvent: {
+      SlackMessage: {
+        ...envelope,
+      },
+      ApiToken: token,
+    },
+    address,
+    user: address.user,
+  }
 }
 
 export function buildSlackMessage(channel: string, message: IMessage): ChatPostMessageParams {
