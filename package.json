@@ -8,7 +8,8 @@
   "author": "Martin Fernandez <fmartin91@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "node_modules/.bin/jest --config jest.json --forceExit --runInBand --verbose",
+    "test": "jest --config jest.json --forceExit --runInBand --verbose",
+    "posttest": "codecov -f coverage/*.json",
     "build": "yarn lint && tsc",
     "watch": "tsc --watch",
     "lint": "tslint 'src/**/*.ts' '__tests__/**/*.ts'",
@@ -36,6 +37,7 @@
     "@types/qs": "^6.5.0",
     "@types/restify": "^5.0.3",
     "@types/ws": "^3.0.2",
+    "codecov": "^2.3.0",
     "jest": "^21.1.0",
     "nock": "^9.0.14",
     "ts-jest": "^21.0.1",
