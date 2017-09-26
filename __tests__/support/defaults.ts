@@ -42,3 +42,18 @@ export const defaultInteractiveMessageEnvelope = {
   is_app_unfurl: "false",
   original_message: { something: "here" },
 }
+
+export const defaultCommandEnvelope = {
+  token: "ZZZ",
+  team_id: "TXXX",
+  team_domain: "suttna.com",
+  enterprise_id: "EXXX",
+  enterprise_name: "Suttna Inc",
+  channel_id: "CXXX",
+  channel_name: "test",
+  user_id: "UXXX",
+  user_name: "Test",
+  command: "/checkin",
+  text: "#channel",
+  response_url: "https://hooks.slack.com/commands/1234/5678",
+}

@@ -5,12 +5,19 @@ import * as nock from "nock"
 
 import { defaultAddress } from "./support/defaults"
 import {
+  dispatchCommandEnvelop,
   dispatchEvent,
   dispatchEventEnvelop,
   dispatchInteractiveMessageAction,
   dispatchInteractiveMessageEnvelope,
 } from "./support/dispatch"
-import { expectedEvent, expectedInteractiveMessage, expectedMessage } from "./support/expect"
+
+import {
+  expectedCommandEvent,
+  expectedConversationUpdateEvent,
+  expectedInteractiveMessage,
+  expectedMessage,
+} from "./support/expect"
 
 import { SlackConnector } from "../src/slack_connector"
 
@@ -132,6 +139,46 @@ describe("SlackConnector", () => {
     })
   })
 
+  describe("listenCommands", () => {
+    const envelope: ISlackCommandEnvelope = {
+      token: "ZZZ",
+      team_id: "TXXX",
+      team_domain: "suttna.com",
+      enterprise_id: "EXXX",
+      enterprise_name: "Suttna Inc",
+      channel_id: "CXXX",
+      channel_name: "test",
+      user_id: "UXXX",
+      user_name: "Test",
+      command: "/checkin",
+      text: "#channel",
+      response_url: "https://hooks.slack.com/commands/1234/5678",
+    }
+
+    describe("when token is wrong", () => {
+      it("responds with status code 400", (done) => {
+        dispatchCommandEnvelop(connector, { ...envelope, token: "bad" }, endMock, () => {
+          expect(endMock).toHaveBeenCalledWith(400)
+          done()
+        })
+      })
+    })
+
+    describe("when token is valid", () => {
+      it("dispatches the event", (done) => {
+        dispatchCommandEnvelop(connector, envelope, endMock, () => {
+          expect(onDispatchMock).toHaveBeenCalledTimes(1)
+          expect(onDispatchMock).toHaveBeenCalledWith([
+            expectedCommandEvent(envelope),
+          ])
+          expect(endMock).toHaveBeenCalledTimes(1)
+
+          done()
+        })
+      })
+    })
+  })
+
   describe("listenInteractiveMessages", () => {
     describe("when token is wrong", () => {
       it("responds with status code 400", (done) => {
@@ -215,7 +262,7 @@ describe("SlackConnector", () => {
           dispatchEvent(connector, event, endMock, () => {
             expect(onDispatchMock).toHaveBeenCalledTimes(1)
             expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedEvent(event, false),
+              expectedConversationUpdateEvent(event, false),
             ])
             expect(endMock).toHaveBeenCalledTimes(1)
             done()
@@ -234,7 +281,7 @@ describe("SlackConnector", () => {
           dispatchEvent(connector, event, endMock, () => {
             expect(onDispatchMock).toHaveBeenCalledTimes(1)
             expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedEvent(event, false),
+              expectedConversationUpdateEvent(event, false),
             ])
             expect(endMock).toHaveBeenCalledTimes(1)
             done()
@@ -252,7 +299,7 @@ describe("SlackConnector", () => {
           dispatchEvent(connector, event, endMock, () => {
             expect(onDispatchMock).toHaveBeenCalledTimes(1)
             expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedEvent(event, true),
+              expectedConversationUpdateEvent(event, true),
             ])
             expect(endMock).toHaveBeenCalledTimes(1)
             done()
@@ -270,7 +317,7 @@ describe("SlackConnector", () => {
           dispatchEvent(connector, event, endMock, () => {
             expect(onDispatchMock).toHaveBeenCalledTimes(1)
             expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedEvent(event, true),
+              expectedConversationUpdateEvent(event, true),
             ])
             expect(endMock).toHaveBeenCalledTimes(1)
             done()
@@ -288,7 +335,7 @@ describe("SlackConnector", () => {
           dispatchEvent(connector, event, endMock, () => {
             expect(onDispatchMock).toHaveBeenCalledTimes(1)
             expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedEvent(event, true),
+              expectedConversationUpdateEvent(event, true),
             ])
             expect(endMock).toHaveBeenCalledTimes(1)
             done()
@@ -306,7 +353,7 @@ describe("SlackConnector", () => {
           dispatchEvent(connector, event, endMock, () => {
             expect(onDispatchMock).toHaveBeenCalledTimes(1)
             expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedEvent(event, true),
+              expectedConversationUpdateEvent(event, true),
             ])
             expect(endMock).toHaveBeenCalledTimes(1)
             done()
@@ -324,7 +371,7 @@ describe("SlackConnector", () => {
           dispatchEvent(connector, event, endMock, () => {
             expect(onDispatchMock).toHaveBeenCalledTimes(1)
             expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedEvent(event, true),
+              expectedConversationUpdateEvent(event, true),
             ])
             expect(endMock).toHaveBeenCalledTimes(1)
             done()
@@ -342,7 +389,7 @@ describe("SlackConnector", () => {
           dispatchEvent(connector, event, endMock, () => {
             expect(onDispatchMock).toHaveBeenCalledTimes(1)
             expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedEvent(event, true),
+              expectedConversationUpdateEvent(event, true),
             ])
             expect(endMock).toHaveBeenCalledTimes(1)
             done()
@@ -360,7 +407,7 @@ describe("SlackConnector", () => {
           dispatchEvent(connector, event, endMock, () => {
             expect(onDispatchMock).toHaveBeenCalledTimes(1)
             expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedEvent(event, true),
+              expectedConversationUpdateEvent(event, true),
             ])
             expect(endMock).toHaveBeenCalledTimes(1)
             done()

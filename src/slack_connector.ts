@@ -22,6 +22,26 @@ export class SlackConnector implements IConnector {
 
   constructor(protected settings: ISlackConnectorSettings) { }
 
+  public listenCommands() {
+    return (req: Request, res: Response, next: () => void) => {
+      const envelope: ISlackCommandEnvelope = req.params
+
+      if (!this.isValidCommand(envelope)) {
+        res.end(400)
+        return next()
+      }
+
+      this.settings.botLookup(envelope.team_id)
+      .then(([token, botIdentifier]) => {
+        const event = utils.buildCommandEvent(envelope, token, botIdentifier, this.settings.botName)
+
+        this.dispatchEvents([event])
+        res.end()
+        next()
+      })
+    }
+  }
+
   public listenInteractiveMessages() {
     return (req: Request, res: Response, next: () => void) => {
       const payload = JSON.parse(
@@ -30,9 +50,7 @@ export class SlackConnector implements IConnector {
 
       if (!this.isValidInteractiveMessage(payload)) {
         res.end(400)
-        next()
-
-        return
+        return next()
       }
 
       this.settings.botLookup(payload.team.id)
@@ -64,7 +82,6 @@ export class SlackConnector implements IConnector {
         res.end()
         next()
       })
-
     }
   }
 
@@ -308,8 +325,6 @@ export class SlackConnector implements IConnector {
       source: "slack",
       agent: "botbuilder",
       text: "",
-      attachments: [],
-      entities: [],
       timestamp: envelope.event.event_ts,
       sourceEvent: {
         SlackMessage: {
@@ -359,6 +374,10 @@ export class SlackConnector implements IConnector {
   }
 
   private isValidInteractiveMessage(envelope: ISlackInteractiveMessageEnvelope): boolean {
+    return envelope.token === this.settings.verificationToken
+  }
+
+  private isValidCommand(envelope: ISlackCommandEnvelope): boolean {
     return envelope.token === this.settings.verificationToken
   }
 
