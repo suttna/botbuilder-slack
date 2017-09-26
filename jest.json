@@ -2,7 +2,7 @@
   "verbose": true,
   "collectCoverage": true,
   "coverageDirectory": "coverage",
-  "coverageReporters": ["html"],
+  "coverageReporters": ["html", "json"],
   "transform": {
     ".(js|ts)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
   },
