@@ -2,19 +2,14 @@ import "jest"
 
 import { CardAction, HeroCard, IEvent, IMessage, Message } from "botbuilder"
 import * as nock from "nock"
-
-import { defaultAddress } from "./support/defaults"
-import {
-  dispatchCommandEnvelop,
-  dispatchEvent,
-  dispatchEventEnvelop,
-  dispatchInteractiveMessageAction,
-  dispatchInteractiveMessageEnvelope,
-} from "./support/dispatch"
+import * as qs from "qs"
+import { ConnectorTester } from "./support/connector_tester"
+import { defaultAddress, defaultInteractiveMessageEnvelope, defaultMessageEnvelope } from "./support/defaults"
 
 import {
   expectedCommandEvent,
   expectedConversationUpdateEvent,
+  expectedInstallationUpdateEvent,
   expectedInteractiveMessage,
   expectedMessage,
 } from "./support/expect"
@@ -41,6 +36,12 @@ describe("SlackConnector", () => {
       botLookup: (id: string) => Promise.resolve(["XXX", "BXXX:TXXX"] as [string, string]),
       botName: "test_bot",
       verificationToken: "ZZZ",
+      clientId: "CID",
+      clientSecret: "CSEC",
+      redirectUrl: "https://test.com/oauth",
+      onOAuthSuccessRedirectUrl: "https://test.com/success",
+      onOAuthErrorRedirectUrl: "https://test.com/error",
+      onOAuthAccessDeniedRedirectUrl: "https://test.com/denied",
     })
 
     onDispatchMock = jest.fn<any>()
@@ -139,6 +140,80 @@ describe("SlackConnector", () => {
     })
   })
 
+  describe("listenOAuth", () => {
+    describe("when user denies access", () => {
+      it("redirects to onOAuthAccessDeniedRedirectUrl", () => {
+        return new ConnectorTester(connector, connector.listenOAuth)
+          .withQuery({ error: "access_denied" })
+          .expectToRedirect("https://test.com/denied")
+          .runTest()
+      })
+    })
+
+    describe("when user grants access", () => {
+      describe("when an api call fails", () => {
+        it("redirects to onOAuthErrorRedirectUrl", () => {
+          const accessStub = nock("https://slack.com")
+            .post('/api/oauth.access', "redirect_uri=https%3A%2F%2Ftest.com%2Foauth&client_id=CID&client_secret=CSEC&code=CODE") // tslint:disable-line
+            .reply(200, {
+              ok: false,
+            })
+
+          return new ConnectorTester(connector, connector.listenOAuth)
+            .withQuery({ code: "CODE" })
+            .expectToRedirect("https://test.com/error")
+            .then(() => expect(accessStub.isDone()).toBeTruthy())
+            .runTest()
+        })
+      })
+
+      describe("when everything is valid", () => {
+        it("redirects to onOAuthSuccessRedirectUrl", () => {
+          const partialAccessResult = {
+            access_token: "xoxp-user",
+            scope: "identify,bot",
+            user_id: "UXXX",
+            team_name: "Suttna",
+            team_id: "TXXX",
+            bot: {
+              bot_user_id: "UBBB",
+              bot_access_token: "xoxb-bot",
+            },
+            scopes: [] as string[],
+            acceptedScopes: [] as string[],
+          }
+
+          const accessStub = nock("https://slack.com")
+            .post('/api/oauth.access', "redirect_uri=https%3A%2F%2Ftest.com%2Foauth&client_id=CID&client_secret=CSEC&code=CODE") // tslint:disable-line
+            .reply(200, {
+              ok: true,
+              ...partialAccessResult,
+            })
+
+          const botStub = nock("https://slack.com")
+            .post("/api/users.info", "user=UBBB&token=xoxp-user")
+            .reply(200, {
+              ok: true,
+              user: {
+                name: "test_bot",
+                profile: {
+                  bot_id: "BXXX",
+                },
+              },
+            })
+
+          return new ConnectorTester(connector, connector.listenOAuth)
+            .withQuery({ code: "CODE" })
+            .expectToRedirect("https://test.com/success")
+            .expectToDispatchEvent(expectedInstallationUpdateEvent(partialAccessResult))
+            .then(() => expect(accessStub.isDone()).toBeTruthy())
+            .then(() => expect(botStub.isDone()).toBeTruthy())
+            .runTest()
+        })
+      })
+    })
+  })
+
   describe("listenCommands", () => {
     const envelope: ISlackCommandEnvelope = {
       token: "ZZZ",
@@ -156,46 +231,48 @@ describe("SlackConnector", () => {
     }
 
     describe("when token is wrong", () => {
-      it("responds with status code 400", (done) => {
-        dispatchCommandEnvelop(connector, { ...envelope, token: "bad" }, endMock, () => {
-          expect(endMock).toHaveBeenCalledWith(400)
-          done()
-        })
+      it("responds with status code 400", () => {
+        return new ConnectorTester(connector, connector.listenCommands)
+          .withParams({ ...envelope, token: "bad" })
+          .expectToRespond(403)
+          .runTest()
       })
     })
 
     describe("when token is valid", () => {
-      it("dispatches the event", (done) => {
-        dispatchCommandEnvelop(connector, envelope, endMock, () => {
-          expect(onDispatchMock).toHaveBeenCalledTimes(1)
-          expect(onDispatchMock).toHaveBeenCalledWith([
-            expectedCommandEvent(envelope),
-          ])
-          expect(endMock).toHaveBeenCalledTimes(1)
-
-          done()
-        })
+      it("dispatches the event", () => {
+        return new ConnectorTester(connector, connector.listenCommands)
+          .withParams(envelope)
+          .expectToDispatchEvent(expectedCommandEvent(envelope))
+          .expectToRespond(200)
+          .runTest()
       })
     })
   })
 
   describe("listenInteractiveMessages", () => {
+    const buildPayload = (envelope: ISlackInteractiveMessageEnvelope) => {
+      const payload = { payload: JSON.stringify(envelope) }
+
+      return qs.stringify(payload)
+    }
+
     describe("when token is wrong", () => {
-      it("responds with status code 400", (done) => {
+      it("responds with status code 400", () => {
         const envelope = {
           payload: {
             token: "bad",
           },
         }
 
-        dispatchInteractiveMessageEnvelope(connector, envelope as any, endMock, () => {
-          expect(endMock).toHaveBeenCalledWith(400)
-          done()
-        })
+        return new ConnectorTester(connector, connector.listenInteractiveMessages)
+          .withBody(buildPayload(envelope as any))
+          .expectToRespond(403)
+          .runTest()
       })
     })
 
-    it("dispatch a message event", (done) => {
+    it("dispatch a message event", () => {
       const action = {
         name: "Questions",
         type: "button",
@@ -203,43 +280,49 @@ describe("SlackConnector", () => {
         value: "action?prompt-menu=questions",
       }
 
-      dispatchInteractiveMessageAction(connector, action, endMock, () => {
-        expect(onDispatchMock).toHaveBeenCalledTimes(1)
-        expect(onDispatchMock).toHaveBeenCalledWith([
-          expectedInteractiveMessage(action),
-        ])
-        expect(endMock).toHaveBeenCalledTimes(1)
-        done()
-      })
+      const envelope = {
+        ...defaultInteractiveMessageEnvelope,
+        actions: [ action ],
+      } as any
+
+      return new ConnectorTester(connector, connector.listenInteractiveMessages)
+        .withBody(buildPayload(envelope))
+        .expectToRespond(200)
+        .expectToDispatchEvent(expectedInteractiveMessage(action))
+        .runTest()
     })
   })
 
   describe("listenEvents", () => {
+    const buildEnvelope = (event: ISlackEvent) => {
+      return { ...defaultMessageEnvelope, event }
+    }
+
     describe("when token is wrong", () => {
-      it("responds with status code 400", (done) => {
+      it("responds with status code 403", () => {
         const event = {
           token: "bad",
         }
 
-        dispatchEventEnvelop(connector, event as ISlackEventEnvelope, endMock, () => {
-          expect(endMock).toHaveBeenCalledWith(400)
-          done()
-        })
+        return new ConnectorTester(connector, connector.listenEvents)
+          .withBody(event)
+          .expectToRespond(403)
+          .runTest()
       })
     })
 
     describe("when a url_verification is sent", () => {
-      it("responds with the challenge", (done) => {
+      it("responds with the challenge", () => {
         const event = {
           token: "ZZZ",
           challenge: "CCCC",
           type: "url_verification",
         }
 
-        dispatchEventEnvelop(connector, event, endMock, () => {
-          expect(endMock).toHaveBeenCalledWith("CCCC")
-          done()
-        })
+        return new ConnectorTester(connector, connector.listenEvents)
+          .withBody(event)
+          .expectToRespond(200, "CCCC")
+          .runTest()
       })
     })
 
@@ -252,172 +335,145 @@ describe("SlackConnector", () => {
       }
 
       describe("when the event type is member_joined_channel", () => {
-        it("dispatch a conversationUpdate event", (done) => {
+        it("dispatch a conversationUpdate event", () => {
           const event = {
             type: "member_joined_channel",
             inviter: "UZZZ",
             ...baseEvent,
           }
 
-          dispatchEvent(connector, event, endMock, () => {
-            expect(onDispatchMock).toHaveBeenCalledTimes(1)
-            expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedConversationUpdateEvent(event, false),
-            ])
-            expect(endMock).toHaveBeenCalledTimes(1)
-            done()
-          })
+          return new ConnectorTester(connector, connector.listenEvents)
+            .withBody(buildEnvelope(event))
+            .expectToRespond(200)
+            .expectToDispatchEvent(expectedConversationUpdateEvent(event, false))
+            .runTest()
         })
       })
 
       describe("when the event type is member_left_channel", () => {
-        it("dispatch a conversationUpdate event", (done) => {
+        it("dispatch a conversationUpdate event", () => {
           const event = {
             type: "member_left_channel",
             inviter: "UZZZ",
             ...baseEvent,
           }
 
-          dispatchEvent(connector, event, endMock, () => {
-            expect(onDispatchMock).toHaveBeenCalledTimes(1)
-            expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedConversationUpdateEvent(event, false),
-            ])
-            expect(endMock).toHaveBeenCalledTimes(1)
-            done()
-          })
+          return new ConnectorTester(connector, connector.listenEvents)
+            .withBody(buildEnvelope(event))
+            .expectToRespond(200)
+            .expectToDispatchEvent(expectedConversationUpdateEvent(event, false))
+            .runTest()
         })
       })
 
       describe("when the event type is channel_archive", () => {
-        it("dispatch a conversationUpdate event", (done) => {
+        it("dispatch a conversationUpdate event", () => {
           const event = {
             type: "channel_archive",
             ...baseEvent,
           }
 
-          dispatchEvent(connector, event, endMock, () => {
-            expect(onDispatchMock).toHaveBeenCalledTimes(1)
-            expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedConversationUpdateEvent(event, true),
-            ])
-            expect(endMock).toHaveBeenCalledTimes(1)
-            done()
-          })
+          return new ConnectorTester(connector, connector.listenEvents)
+            .withBody(buildEnvelope(event))
+            .expectToRespond(200)
+            .expectToDispatchEvent(expectedConversationUpdateEvent(event, true))
+            .runTest()
         })
       })
 
       describe("when the event type is channel_created", () => {
-        it("dispatch a conversationUpdate event", (done) => {
+        it("dispatch a conversationUpdate event", () => {
           const event = {
             type: "channel_created",
             ...baseEvent,
           }
 
-          dispatchEvent(connector, event, endMock, () => {
-            expect(onDispatchMock).toHaveBeenCalledTimes(1)
-            expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedConversationUpdateEvent(event, true),
-            ])
-            expect(endMock).toHaveBeenCalledTimes(1)
-            done()
-          })
+          return new ConnectorTester(connector, connector.listenEvents)
+            .withBody(buildEnvelope(event))
+            .expectToRespond(200)
+            .expectToDispatchEvent(expectedConversationUpdateEvent(event, true))
+            .runTest()
         })
       })
 
       describe("when the event type is channel_deleted", () => {
-        it("dispatch a conversationUpdate event", (done) => {
+        it("dispatch a conversationUpdate event", () => {
           const event = {
             type: "channel_deleted",
             ...baseEvent,
           }
 
-          dispatchEvent(connector, event, endMock, () => {
-            expect(onDispatchMock).toHaveBeenCalledTimes(1)
-            expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedConversationUpdateEvent(event, true),
-            ])
-            expect(endMock).toHaveBeenCalledTimes(1)
-            done()
-          })
+          return new ConnectorTester(connector, connector.listenEvents)
+            .withBody(buildEnvelope(event))
+            .expectToRespond(200)
+            .expectToDispatchEvent(expectedConversationUpdateEvent(event, true))
+            .runTest()
         })
       })
 
       describe("when the event type is channel_unarchive", () => {
-        it("dispatch a conversationUpdate event", (done) => {
+        it("dispatch a conversationUpdate event", () => {
           const event = {
             type: "channel_unarchive",
             ...baseEvent,
           }
 
-          dispatchEvent(connector, event, endMock, () => {
-            expect(onDispatchMock).toHaveBeenCalledTimes(1)
-            expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedConversationUpdateEvent(event, true),
-            ])
-            expect(endMock).toHaveBeenCalledTimes(1)
-            done()
-          })
+          return new ConnectorTester(connector, connector.listenEvents)
+            .withBody(buildEnvelope(event))
+            .expectToRespond(200)
+            .expectToDispatchEvent(expectedConversationUpdateEvent(event, true))
+            .runTest()
         })
       })
 
       describe("when the event type is group_archive", () => {
-        it("dispatch a conversationUpdate event", (done) => {
+        it("dispatch a conversationUpdate event", () => {
           const event = {
             type: "group_archive",
             ...baseEvent,
           }
 
-          dispatchEvent(connector, event, endMock, () => {
-            expect(onDispatchMock).toHaveBeenCalledTimes(1)
-            expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedConversationUpdateEvent(event, true),
-            ])
-            expect(endMock).toHaveBeenCalledTimes(1)
-            done()
-          })
+          return new ConnectorTester(connector, connector.listenEvents)
+            .withBody(buildEnvelope(event))
+            .expectToRespond(200)
+            .expectToDispatchEvent(expectedConversationUpdateEvent(event, true))
+            .runTest()
         })
       })
 
       describe("when the event type is group_rename", () => {
-        it("dispatch a conversationUpdate event", (done) => {
+        it("dispatch a conversationUpdate event", () => {
           const event = {
             type: "group_rename",
             ...baseEvent,
           }
 
-          dispatchEvent(connector, event, endMock, () => {
-            expect(onDispatchMock).toHaveBeenCalledTimes(1)
-            expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedConversationUpdateEvent(event, true),
-            ])
-            expect(endMock).toHaveBeenCalledTimes(1)
-            done()
-          })
+          return new ConnectorTester(connector, connector.listenEvents)
+            .withBody(buildEnvelope(event))
+            .expectToRespond(200)
+            .expectToDispatchEvent(expectedConversationUpdateEvent(event, true))
+            .runTest()
         })
       })
 
       describe("when the event type is group_unarchive", () => {
-        it("dispatch a conversationUpdate event", (done) => {
+        it("dispatch a conversationUpdate event", () => {
           const event = {
             type: "group_unarchive",
             ...baseEvent,
           }
 
-          dispatchEvent(connector, event, endMock, () => {
-            expect(onDispatchMock).toHaveBeenCalledTimes(1)
-            expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedConversationUpdateEvent(event, true),
-            ])
-            expect(endMock).toHaveBeenCalledTimes(1)
-            done()
-          })
+          return new ConnectorTester(connector, connector.listenEvents)
+            .withBody(buildEnvelope(event))
+            .expectToRespond(200)
+            .expectToDispatchEvent(expectedConversationUpdateEvent(event, true))
+            .runTest()
         })
       })
     })
 
     describe("when a message is received from a bot", () => {
-      it("doesn't dispatch an event", (done) => {
+      it("doesn't dispatch an event", () => {
         const event = {
           type: "message",
           text: "",
@@ -429,16 +485,16 @@ describe("SlackConnector", () => {
           event_ts: "1505227601.000491",
         } as ISlackMessageEvent
 
-        dispatchEvent(connector, event, endMock, () => {
-          expect(onDispatchMock).toHaveBeenCalledTimes(0)
-          expect(endMock).toHaveBeenCalledTimes(1)
-          done()
-        })
+        return new ConnectorTester(connector, connector.listenEvents)
+          .withBody(buildEnvelope(event))
+          .expectToRespond(200)
+          .expectNotToDispatchEvents()
+          .runTest()
       })
     })
 
     describe("when a message is received from a user", () => {
-      it("dispatch one message event", (done) => {
+      it("dispatch one message event", () => {
         const event = {
           text: "This is a test message",
           type: "message",
@@ -448,18 +504,15 @@ describe("SlackConnector", () => {
           event_ts: "1505227601.000491",
         } as ISlackMessageEvent
 
-        dispatchEvent(connector, event, endMock, () => {
-          expect(onDispatchMock).toHaveBeenCalledTimes(1)
-          expect(onDispatchMock).toHaveBeenCalledWith([
-            expectedMessage(event),
-          ])
-          expect(endMock).toHaveBeenCalledTimes(1)
-          done()
-        })
+        return new ConnectorTester(connector, connector.listenEvents)
+          .withBody(buildEnvelope(event))
+          .expectToRespond(200)
+          .expectToDispatchEvent(expectedMessage(event))
+          .runTest()
       })
 
       describe("when the message contains mentions", () => {
-        it("dispatch one message event with the mentions", (done) => {
+        it("dispatch one message event with the mentions", () => {
           const event = {
             text: "This is a test message with a mention <@UZZZ>",
             type: "message",
@@ -469,14 +522,11 @@ describe("SlackConnector", () => {
             event_ts: "1505227601.000491",
           } as ISlackMessageEvent
 
-          dispatchEvent(connector, event, endMock, () => {
-            expect(onDispatchMock).toHaveBeenCalledTimes(1)
-            expect(onDispatchMock).toHaveBeenCalledWith([
-              expectedMessage(event, ["UZZZ"]),
-            ])
-            expect(endMock).toHaveBeenCalledTimes(1)
-            done()
-          })
+          return new ConnectorTester(connector, connector.listenEvents)
+            .withBody(buildEnvelope(event))
+            .expectToRespond(200)
+            .expectToDispatchEvent(expectedMessage(event, ["UZZZ"]))
+            .runTest()
         })
       })
 

@@ -1,6 +1,6 @@
 ![Logo](logo.png)
 
-# botbuilder-slack [![npm version](https://badge.fury.io/js/botbuilder-slack.svg)](https://badge.fury.io/js/botbuilder-slack) [![CircleCI](https://circleci.com/gh/suttna/botbuilder-slack.svg?style=svg)](https://circleci.com/gh/suttna/botbuilder-slack) [![Join the chat at https://gitter.im/suttna/botbuilder-slack](https://badges.gitter.im/suttna/botbuilder-slack.svg)](https://gitter.im/suttna/botbuilder-slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# botbuilder-slack [![npm version](https://badge.fury.io/js/botbuilder-slack.svg)](https://badge.fury.io/js/botbuilder-slack) [![CircleCI](https://circleci.com/gh/suttna/botbuilder-slack.svg?style=svg)](https://circleci.com/gh/suttna/botbuilder-slack) [![codecov](https://codecov.io/gh/suttna/botbuilder-slack/branch/master/graph/badge.svg)](https://codecov.io/gh/suttna/botbuilder-slack) [![Join the chat at https://gitter.im/suttna/botbuilder-slack](https://badges.gitter.im/suttna/botbuilder-slack.svg)](https://gitter.im/suttna/botbuilder-slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ⚠️  **This is under development. If you want to help 🚀, please contact the Suttna team at opensource@suttna.com**
 
@@ -61,9 +61,21 @@ At the moment, the mentions that are loaded in the entities property of a messag
 yarn add botbuilder-slack
 ```
 
+To run the code in master branche:
+
+```
+yarn add botbuilder-slack@next
+```
+
 ## Configuration
 
-In order to use all the connector features you will need to configure Slack's Event Subscriptions and Slack's Interactive messages.
+In order to use all the connector features you will need to configure Slack's OAuth, Slack's Event Subscriptions, Slack's Interactive messages and Slack's commands. Configure only the options that your bot is going to use
+
+### OAuth
+
+You need to setup the base URL where your bot is going to handle the OAuth process. Check the connector constructor settings for more information on the available options.
+
+After a user has installed the bot, `installationUpdate` event is going to be emitted. The address will contain the installer information as the user and the bot identity (same as BotFramework's). The sourceEvent in this case will be the response from calling Slack's api method `oauth.access`.
 
 ### Event Subscriptions
 
@@ -94,36 +106,63 @@ You need to setup a URL that will listen for commands. Look at the usage example
 ## Usage
 
 ```javascript
-var restify = require('restify')
-var builder = require('botbuilder')
-var botbuilderSlack = require('botbuilder-slack')
+import * as restify from 'restify'
+import { UniversalBot, IEvent, IIdentity } from "botbuilder"
+import { SlackConnector } from "botbuilder-slack"
 
-// This is how the connector is able to get the slack authorization token. You need to be
-// able to fetch the authorization token for an account based on the team id (`TXXXXX`)
-var botLookup = (teamId) => {
-  return repositories.account.findBy({ externalId: teamId })
-    .then(slackAccount => [slackAccount.slackApiToken, slackAccount.botId])
+type BotCache = { [key: string]: { identity: IIdentity, token: string } }
+
+const botsCache: BotCache = {}
+
+const connectorSettings = {
+  botLookup: (teamId: string) => {
+    const botEntry = botsCache[teamId]
+
+    if (botEntry) {
+      return Promise.resolve([botEntry.token, botEntry.identity.id] as [string, string])
+    } else {
+      return Promise.reject(new Error('Bot not found'))
+    }
+  },
+  botName: process.env.SLACK_BOT_NAME,
+  verificationToken: process.env.SLACK_VERIFICATION_TOKEN,
+  clientId: process.env.SLACK_CLIENT_ID,
+  clientSecret: process.env.SLACK_CLIENT_SECRET,
+  redirectUrl: process.env.SLACK_OAUTH_REDIRECT_URL,
+  onOAuthSuccessRedirectUrl: process.env.SLACK_OAUTH_ON_SUCCESS_REDIRECT_URL,
+  onOAuthErrorRedirectUrl: process.env.SLACK_OAUTH_ON_ERROR_REDIRECT_URL,
+  onOAuthAccessDeniedRedirectUrl: process.env.SLACK_OAUTH_ON_ACCESS_DENIED_REDIRECT_URL
 }
 
-var connector = new builder.SlackConnector({
-  botLookup: botLookup,
-  botName: 'suttna',
-  verificationToken: 'XXX'
+const connector = new SlackConnector(connectorSettings)
+
+const bot = new UniversalBot(connector)
+const app = restify.createServer()
+
+app.use(restify.plugins.queryParser())
+app.use(restify.plugins.bodyParser())
+
+bot.on('installationUpdate', (event: IEvent) => {
+  console.info(`New bot installed by ${event.sourceEvent.SlackMessage.user_id}`)
+
+  botsCache[event.sourceEvent.SlackMessage.team_id] = {
+    identity: event.address.bot,
+    token: event.sourceEvent.ApiToken
+  }
 })
 
-var bot = new builder.UniversalBot()
+bot.dialog('/', (session) => {
+  session.endDialog('pong')
+})
 
-// This will make the SlackConnector work only for messages that have 'slack' as the channelId
-bot.connector('slack', connector)
+app.listen(3000, () => {
+  console.log("Bot is listening...")
+})
 
-// Attach listener for events. You need to configure this url in Slack website
-server.post('/slack/events', connector.listenEvents())
-
-// Attach listener for interactive messages. You need to configure this url in Slack website
-server.post('/slack/interactive', connector.listenInteractiveMessages())
-
-// Attach listener for interactive messages. You need to configure this url in Slack website
-server.post('/slack/commands', connector.listenCommands())
+app.post('/slack/events', connector.listenEvents())
+app.post('/slack/interactive', connector.listenInteractiveMessages())
+app.post('/slack/command', connector.listenCommands())
+app.get('/slack/oauth', connector.listenOAuth())
 ```
 
 ## Help

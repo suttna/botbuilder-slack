@@ -12,7 +12,7 @@ declare module '@slack/client' {
 
   class WebClient {
     constructor(
-      token: string,
+      token?: string,
       options?: {
         slackAPIUrl?: string,
         transport?: any,
@@ -758,9 +758,9 @@ declare module '@slack/client' {
   }
 
   interface WebApiOauth {
-    access(clientId: string, clientSecret: string, code: string, callback: (err: Error, result: WebApiResultAny) => void): void;
-    access(clientId: string, clientSecret: string, code: string, opts: Object, callback: (err: Error, result: WebApiResultAny) => void): void;
-    access(clientId: string, clientSecret: string, code: string, opts?: Object): Promise<WebApiResultAny>;
+    access(clientId: string, clientSecret: string, code: string, callback: (err: Error, result: AuthAccessResult) => void): void;
+    access(clientId: string, clientSecret: string, code: string, opts: Object, callback: (err: Error, result: AuthAccessResult) => void): void;
+    access(clientId: string, clientSecret: string, code: string, opts?: Object): Promise<AuthAccessResult>;
   }
 
   interface WebApiPins {
@@ -980,6 +980,23 @@ declare module '@slack/client' {
 
   interface AuthRevokeResult extends WebApiResult {
     revoked: boolean;
+  }
+
+  interface AuthAccessResult extends WebApiResult {
+    access_token: string
+    scope: string
+    team_name?: string
+    team_id: string
+    user_id: string
+    incoming_webhook?: {
+      url: string
+      channel: string
+      configuration_url: string
+    }
+    bot?: {
+      bot_user_id: string
+      bot_access_token: string
+    }
   }
 
   // bots
