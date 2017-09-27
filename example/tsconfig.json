@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2017",
+    "lib": ["es7"],
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "strictNullChecks": false,
+    "moduleResolution": "node",
+    "baseUrl": "."
+  },
+  "include": [
+    "./app.ts"
+  ]
+}

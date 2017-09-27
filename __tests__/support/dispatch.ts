@@ -34,6 +34,8 @@ export function dispatchEventEnvelop(
 
   const responseMock = jest.fn<Response>(() => ({
     end: endMock,
+    status: jest.fn(),
+    header: jest.fn(),
   }))
 
   connector.listenEvents()(new requestMock(), new responseMock(), next)
@@ -53,6 +55,8 @@ export function dispatchCommandEnvelop(
 
   const responseMock = jest.fn<Response>(() => ({
     end: endMock,
+    status: jest.fn(),
+    header: jest.fn(),
   }))
 
   connector.listenCommands()(new requestMock(), new responseMock(), next)
@@ -95,6 +99,8 @@ export function dispatchInteractiveMessageEnvelope(
 
   const responseMock = jest.fn<Response>(() => ({
     end: endMock,
+    status: jest.fn(),
+    header: jest.fn(),
   }))
 
   connector.listenInteractiveMessages()(new requestMock(), new responseMock(), next)

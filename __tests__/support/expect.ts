@@ -1,7 +1,7 @@
 import { IEvent, IMessage } from "botbuilder"
 import "jest"
 import { ISlackAddress } from "../../src/slack_connector"
-import { defaultInteractiveMessageEnvelope, defaultMessageEnvelope, defaultTeam } from "./defaults"
+import { defaultInteractiveMessageEnvelope, defaultMessageEnvelope } from "./defaults"
 
 export function expectedMessage(event: ISlackMessageEvent, mentions: string[] = []): IMessage {
   const user = { id: `${event.user}:${defaultMessageEnvelope.team_id}` }
@@ -161,5 +161,34 @@ export function expectedInteractiveMessage(action: any): IMessage {
       bot,
       conversation,
     } as ISlackAddress,
+  }
+}
+
+export function expectedInstallationUpdateEvent(accessResult: any): IEvent {
+  const user = {
+    id: `${defaultInteractiveMessageEnvelope.user.id}:${defaultInteractiveMessageEnvelope.team.id}`,
+  }
+
+  const bot = {
+    id: "BXXX:TXXX",
+    name: "test_bot",
+  }
+
+  return {
+    type: "installationUpdate",
+    source: "slack",
+    agent: "botbuilder",
+    sourceEvent: {
+      SlackMessage: {
+        ...accessResult,
+      },
+      ApiToken: accessResult.bot.bot_access_token,
+    },
+    address: {
+      channelId: "slack",
+      user,
+      bot,
+    },
+    user,
   }
 }

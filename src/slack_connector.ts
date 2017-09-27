@@ -1,4 +1,6 @@
-import { FullChannelResult, FullUserResult, ImOpenResult, PartialChannelResult, WebClient } from "@slack/client"
+import {
+  AuthAccessResult, FullChannelResult, FullUserResult, ImOpenResult, PartialChannelResult, WebClient,
+} from "@slack/client"
 import * as Bluebird from "bluebird"
 import { IAddress, IConnector, IConversationUpdate, IEvent, IMessage, Message } from "botbuilder"
 import * as qs from "qs"
@@ -10,9 +12,34 @@ export interface ISlackAddress extends IAddress {
 }
 
 export interface ISlackConnectorSettings {
-  botLookup: (teamId: string) => Promise<[string, string]>,
+  botLookup: (teamId: string) => Promise<[string, string]>
   botName: string
   verificationToken: string
+  clientId: string
+  clientSecret: string
+  redirectUrl: string
+  onOAuthSuccessRedirectUrl: string
+  onOAuthErrorRedirectUrl: string
+  onOAuthAccessDeniedRedirectUrl: string
+}
+
+function handleUnauthorizedRequest(res: Response, next: () => void) {
+  res.status(403)
+  res.end()
+  next()
+}
+
+function handleSuccessfulRequest(res: Response, next: () => void, data?: string) {
+  res.status(200)
+  res.end(data)
+  next()
+}
+
+function handleRedirectRequest(url: string, res: Response, next: () => void) {
+  res.header("Location", url)
+  res.status(302)
+  res.end()
+  next()
 }
 
 export class SlackConnector implements IConnector {
@@ -22,13 +49,46 @@ export class SlackConnector implements IConnector {
 
   constructor(protected settings: ISlackConnectorSettings) { }
 
+  public listenOAuth() {
+    return (req: Request, res: Response, next: () => void) => {
+      const error = req.query.error
+
+      if (error === "access_denied") {
+        return handleRedirectRequest(this.settings.onOAuthAccessDeniedRedirectUrl, res, next)
+      }
+
+      const code = req.query.code
+
+      this.createClient()
+        .then(async (c) => {
+          try {
+            const result = await c.oauth.access(
+              this.settings.clientId,
+              this.settings.clientSecret,
+              code,
+              { redirect_uri: this.settings.redirectUrl },
+            )
+
+            const event = await this.buildInstallationUpdateEvent(result)
+
+            console.info(event)
+
+            this.dispatchEvents([event])
+
+            handleRedirectRequest(this.settings.onOAuthSuccessRedirectUrl, res, next)
+          } catch (e) {
+            return handleRedirectRequest(this.settings.onOAuthErrorRedirectUrl, res, next)
+          }
+      })
+    }
+  }
+
   public listenCommands() {
     return (req: Request, res: Response, next: () => void) => {
       const envelope: ISlackCommandEnvelope = req.params
 
       if (!this.isValidCommand(envelope)) {
-        res.end(400)
-        return next()
+        return handleUnauthorizedRequest(res, next)
       }
 
       this.settings.botLookup(envelope.team_id)
@@ -36,8 +96,8 @@ export class SlackConnector implements IConnector {
         const event = utils.buildCommandEvent(envelope, token, botIdentifier, this.settings.botName)
 
         this.dispatchEvents([event])
-        res.end()
-        next()
+
+        return handleSuccessfulRequest(res, next)
       })
     }
   }
@@ -49,8 +109,7 @@ export class SlackConnector implements IConnector {
       ) as ISlackInteractiveMessageEnvelope
 
       if (!this.isValidInteractiveMessage(payload)) {
-        res.end(400)
-        return next()
+        return handleUnauthorizedRequest(res, next)
       }
 
       this.settings.botLookup(payload.team.id)
@@ -79,8 +138,7 @@ export class SlackConnector implements IConnector {
           } as IMessage,
         ])
 
-        res.end()
-        next()
+        return handleSuccessfulRequest(res, next)
       })
     }
   }
@@ -90,26 +148,20 @@ export class SlackConnector implements IConnector {
       const envelope: ISlackEventEnvelope = req.body
 
       if (!this.isValidEvent(envelope)) {
-        res.end(400)
-        next()
-
-        return
+        return handleUnauthorizedRequest(res, next)
       }
 
       if (envelope.type === "url_verification") {
-        res.end(envelope.challenge)
-        next()
+        return handleSuccessfulRequest(res, next, envelope.challenge)
       } else if (envelope.type === "event_callback") {
         this.settings.botLookup(envelope.team_id)
         .then(([token, botIdentifier]) => {
           this.dispatch(envelope, botIdentifier, token)
 
-          res.end()
-          next()
+          return handleSuccessfulRequest(res, next)
         })
       } else {
-        res.end()
-        next()
+        return handleSuccessfulRequest(res, next)
       }
     }
   }
@@ -311,6 +363,38 @@ export class SlackConnector implements IConnector {
     }, text)
   }
 
+  private async buildInstallationUpdateEvent(accessResult: AuthAccessResult): Promise<IEvent> {
+    const bot = await (new WebClient(accessResult.access_token).users.info(accessResult.bot.bot_user_id))
+    console.info(bot)
+    const user = utils.buildUserIdentity(accessResult.user_id, accessResult.team_id)
+
+    const address = {
+      channelId: "slack",
+      user,
+      bot: utils.buildBotIdentity(
+        utils.buildUserIdentity(bot.user.profile.bot_id, accessResult.team_id).id,
+        bot.user.name,
+      ),
+    }
+
+    // Remove the ok key
+    delete accessResult.ok
+
+    return {
+      type: "installationUpdate",
+      source: "slack",
+      agent: "botbuilder",
+      sourceEvent: {
+        SlackMessage: {
+          ...accessResult,
+        },
+        ApiToken: accessResult.bot.bot_access_token,
+      },
+      address,
+      user,
+    }
+  }
+
   private buildConversationUpdateEvent(envelope: ISlackEventEnvelope, botId: string, token: string): IEvent {
     const address = utils.buildAddress(
       envelope.team_id,
@@ -399,9 +483,13 @@ export class SlackConnector implements IConnector {
     }
   }
 
-  private async createClient(teamId: string): Promise<WebClient> {
-    const [token] = await this.settings.botLookup(teamId)
+  private async createClient(teamId?: string): Promise<WebClient> {
+    if (teamId) {
+      const [token] = await this.settings.botLookup(teamId)
 
-    return new WebClient(token)
+      return new WebClient(token)
+    }
+
+    return new WebClient()
   }
 }

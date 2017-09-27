@@ -14,7 +14,7 @@
     "watch": "tsc --watch",
     "lint": "tslint 'src/**/*.ts' '__tests__/**/*.ts'",
     "lint:fix": "tslint 'src/**/*.ts' '__tests__/**/*.ts' --fix",
-    "ci": "yarn lint && yarn test",
+    "ci": "yarn lint && yarn build && yarn test",
     "prepublish": "yarn build"
   },
   "keywords": [
