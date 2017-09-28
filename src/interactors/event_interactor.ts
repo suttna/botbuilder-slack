@@ -92,6 +92,8 @@ export class EventInteractor {
       source: "slack",
       agent: "botbuilder",
       text: "",
+      attachments: [],
+      entities: [],
       timestamp: this.event.event_ts,
       sourceEvent: {
         SlackMessage: {

@@ -75,7 +75,7 @@ In order to use all the connector features you will need to configure Slack's OA
 
 You need to setup the base URL where your bot is going to handle the OAuth process. Check the connector constructor settings for more information on the available options.
 
-After a user has installed the bot, `installationUpdate` event is going to be emitted. The address will contain the installer information as the user and the bot identity (same as BotFramework's). The sourceEvent in this case will be the response from calling Slack's api method `oauth.access`.
+After a user has installed the bot, `installationUpdate` event is going to be emitted. The address will contain the installer information in the sourceEvent. The address will set the user property as the bot to be compatible with BotFramework. The sourceEvent in this case will be the response from calling Slack's api method `oauth.access`.
 
 ### Event Subscriptions
 

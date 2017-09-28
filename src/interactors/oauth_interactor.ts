@@ -35,16 +35,16 @@ export class OAuthInteractor {
   }
 
   private async buildInstallationUpdateEvent(accessResult: AuthAccessResult): Promise<IEvent> {
-    const bot = await (new WebClient(accessResult.access_token).users.info(accessResult.bot.bot_user_id))
-    const user = utils.buildUserIdentity(accessResult.user_id, accessResult.team_id)
+    const botUser = await (new WebClient(accessResult.access_token).users.info(accessResult.bot.bot_user_id))
+    const bot = utils.buildBotIdentity(
+      utils.buildUserIdentity(botUser.user.profile.bot_id, accessResult.team_id).id,
+      botUser.user.name,
+    )
 
     const address = {
       channelId: "slack",
-      user,
-      bot: utils.buildBotIdentity(
-        utils.buildUserIdentity(bot.user.profile.bot_id, accessResult.team_id).id,
-        bot.user.name,
-      ),
+      user: bot,
+      bot,
     }
 
     // Remove the ok key
@@ -53,6 +53,7 @@ export class OAuthInteractor {
     return {
       type: "installationUpdate",
       source: "slack",
+      action: "add",
       agent: "botbuilder",
       sourceEvent: {
         SlackMessage: {
@@ -61,7 +62,7 @@ export class OAuthInteractor {
         ApiToken: accessResult.bot.bot_access_token,
       },
       address,
-      user,
-    }
+      user: bot,
+    } as IEvent
   }
 }
