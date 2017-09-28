@@ -9,14 +9,17 @@ interface IMention {
   text: string
 }
 
+interface ISlackEnvelop {
+  token: string
+}
+
 interface ISlackConversationIdentifier {
   bot: string
   channel: string
   team: string
 }
 
-interface ISlackEventEnvelope {
-  token: string
+interface ISlackEventEnvelope extends ISlackEnvelop {
   team_id?: string
   api_app_id?: string
   event?: ISlackEvent
@@ -27,8 +30,7 @@ interface ISlackEventEnvelope {
   challenge?: string
 }
 
-interface ISlackCommandEnvelope {
-  token: string
+interface ISlackCommandEnvelope extends ISlackEnvelop {
   team_id: string
   team_domain: string
   enterprise_id: string
@@ -79,13 +81,12 @@ interface ISlackMessageAction {
   value: string
 }
 
-interface ISlackInteractiveMessageEnvelope {
+interface ISlackInteractiveMessageEnvelope extends ISlackEnvelop {
   actions: ISlackMessageAction[]
   callback_id: "botbuilder"
   action_ts: string
   message_ts: string
   attachment_id: string
-  token: string
   is_app_unfurl: boolean
   original_message: any
   response_url: string
