@@ -63,6 +63,8 @@ export function expectedCommandEvent(envelope: ISlackCommandEnvelope): IEvent {
     type: "slackCommand",
     source: "slack",
     agent: "botbuilder",
+    attachments: [],
+    entities: [],
     user,
     sourceEvent: {
       SlackMessage: {
@@ -107,6 +109,8 @@ export function expectedConversationUpdateEvent(event: ISlackEvent, isBotTheUser
     source: "slack",
     agent: "botbuilder",
     timestamp: event.event_ts,
+    attachments: [],
+    entities: [],
     user,
     sourceEvent: {
       SlackMessage: {
@@ -165,10 +169,6 @@ export function expectedInteractiveMessage(action: any): IMessage {
 }
 
 export function expectedInstallationUpdateEvent(accessResult: any): IEvent {
-  const user = {
-    id: `${defaultInteractiveMessageEnvelope.user.id}:${defaultInteractiveMessageEnvelope.team.id}`,
-  }
-
   const bot = {
     id: "BXXX:TXXX",
     name: "test_bot",
@@ -178,6 +178,7 @@ export function expectedInstallationUpdateEvent(accessResult: any): IEvent {
     type: "installationUpdate",
     source: "slack",
     agent: "botbuilder",
+    action: "add",
     sourceEvent: {
       SlackMessage: {
         ...accessResult,
@@ -186,9 +187,9 @@ export function expectedInstallationUpdateEvent(accessResult: any): IEvent {
     },
     address: {
       channelId: "slack",
-      user,
+      user: bot,
       bot,
     },
-    user,
-  }
+    user: bot,
+  } as IEvent
 }

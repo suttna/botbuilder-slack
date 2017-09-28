@@ -32,6 +32,8 @@ export class CommandInteractor {
       type: "slackCommand",
       source: "slack",
       agent: "botbuilder",
+      attachments: [],
+      entities: [],
       sourceEvent: {
         SlackMessage: {
           ...this.envelope,
@@ -40,7 +42,6 @@ export class CommandInteractor {
       },
       address,
       user: address.user,
-    }
+    } as IEvent
   }
-
 }
