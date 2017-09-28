@@ -1,7 +1,10 @@
 import { ChatPostMessageParams, MessageAttachment } from "@slack/client"
-import { IEvent, IIdentity, IMessage } from "botbuilder"
-import { CONVERSATION_UPDATE_EVENTS } from "./constants"
+import { IIdentity, IMessage } from "botbuilder"
 import { ISlackAddress } from "./slack_connector"
+
+export function isValidEnvelope(envelope: ISlackEnvelop, verificationToken: string): boolean {
+  return envelope.token === verificationToken
+}
 
 export function decomposeConversationId(conversationId: string): ISlackConversationIdentifier {
   const [botId, teamId, slackConversationId] = conversationId.split(":")
@@ -42,35 +45,6 @@ export function extractMentions(text: string, teamId: string, botId: string, bot
   })
 }
 
-export function buildCommandEvent(
-  envelope: ISlackCommandEnvelope,
-  token: string,
-  botIdentifier: string,
-  botName: string,
-): IEvent {
-  const address = buildAddress(
-    envelope.team_id,
-    envelope.user_id,
-    envelope.channel_id,
-    botIdentifier,
-    botName,
-  )
-
-  return {
-    type: "slackCommand",
-    source: "slack",
-    agent: "botbuilder",
-    sourceEvent: {
-      SlackMessage: {
-        ...envelope,
-      },
-      ApiToken: token,
-    },
-    address,
-    user: address.user,
-  }
-}
-
 export function buildSlackMessage(channel: string, message: IMessage): ChatPostMessageParams {
   let attachments: MessageAttachment[] = []
 
@@ -109,30 +83,6 @@ export function buildSlackMessage(channel: string, message: IMessage): ChatPostM
   return {
     channel,
     attachments,
-  }
-}
-
-export function buildMessageSourceEvent(envelope: ISlackEventEnvelope, token: string) {
-  return {
-    slack: {
-      SlackMessage: {
-        ...envelope.event,
-        team: envelope.team_id,
-        source_team: envelope.team_id,
-      },
-      ApiToken: token,
-    },
-  }
-}
-
-export function buildInteractiveMessageSourceEvent(payload: ISlackInteractiveMessageEnvelope, token: string) {
-  return {
-    slack: {
-      Payload: {
-        ...payload,
-      },
-      ApiToken: token,
-    },
   }
 }
 
@@ -185,21 +135,4 @@ export function isGroupConversation(slackChannelId: string): boolean {
   const channelType = slackChannelId[0]
 
   return channelType === "C" || channelType === "G"
-}
-
-export function isConversationUpdateEvent(event: ISlackEvent): boolean {
-  return CONVERSATION_UPDATE_EVENTS.includes(event.type)
-}
-
-export function isUserMessageEvent(event: ISlackEvent): boolean {
-  if (event.type === "message") {
-    const messageEvent = event as ISlackMessageEvent
-
-    // If event doesn't have a subtype it means it came from a user
-    return !messageEvent.subtype
-  }
-}
-
-export function isRoutableEvent(event: ISlackEvent): boolean {
-  return isUserMessageEvent(event) || isConversationUpdateEvent(event)
 }
