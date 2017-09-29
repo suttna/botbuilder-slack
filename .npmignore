@@ -1,0 +1,7 @@
+src
+__tests__
+jest.json
+.gitattributes
+circle.yml
+coverage
+example

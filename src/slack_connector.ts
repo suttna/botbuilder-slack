@@ -1,4 +1,6 @@
-import { FullChannelResult, FullUserResult, ImOpenResult, PartialChannelResult, WebClient } from "@slack/client"
+import {
+  FullChannelResult, FullTeamResult, FullUserResult, ImOpenResult, PartialChannelResult, WebClient,
+} from "@slack/client"
 import * as Bluebird from "bluebird"
 import { IAddress, IConnector, IEvent, IMessage } from "botbuilder"
 import * as qs from "qs"
@@ -199,6 +201,13 @@ export class SlackConnector implements IConnector {
     const [slackUserId, teamId] = address.user.id.split(":")
 
     return this.getUser(teamId, slackUserId)
+  }
+
+  public async getTeam(address: IAddress): Promise<FullTeamResult> {
+    const { team } = utils.decomposeUserId(address.user.id)
+    const client = await this.createClient(team)
+
+    return (await client.team.info()).team
   }
 
   public async startDirectMessage(userId: string): Promise<ImOpenResult> {
