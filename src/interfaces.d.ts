@@ -19,6 +19,11 @@ interface ISlackConversationIdentifier {
   team: string
 }
 
+interface ISlackUserIdentifier {
+  user: string
+  team: string
+}
+
 interface ISlackEventEnvelope extends ISlackEnvelop {
   team_id?: string
   api_app_id?: string

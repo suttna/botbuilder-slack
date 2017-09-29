@@ -16,6 +16,15 @@ export function decomposeConversationId(conversationId: string): ISlackConversat
   }
 }
 
+export function decomposeUserId(userId: string): ISlackUserIdentifier {
+  const [user, team] = userId.split(":")
+
+  return {
+    user,
+    team,
+  }
+}
+
 export function extractMentions(text: string, teamId: string, botId: string, botUserId: string): IMention[] {
   const matches = text.match(/<@(\w+)>/g)
 
