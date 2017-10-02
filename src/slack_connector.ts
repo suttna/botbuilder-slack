@@ -137,7 +137,10 @@ export class SlackConnector implements IConnector {
   public startConversation(address: IAddress, cb: (err: Error, address?: IAddress) => void) {
     this.startDirectMessage(address.user.id)
       .then((d) => {
-        const newAddress = { ...address, conversation: { id: d.channel.id } }
+        const newAddress = {
+          ...address,
+          conversation: utils.buildConversationIdentity(d.channel.id, address.bot.id),
+        }
 
         cb(null, newAddress)
       })

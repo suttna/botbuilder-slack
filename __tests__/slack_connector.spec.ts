@@ -52,6 +52,29 @@ describe("SlackConnector", () => {
     connector.onEvent(onDispatchEvents)
   })
 
+  describe("startConversation", () => {
+    it("invokes the slack api", (done) => {
+      const stub = nock("https://slack.com")
+        .post("/api/im.open", "user=UXXX&token=XXX")
+        .reply(200, {
+          ok: true,
+          channel: {
+            id: "DXXX",
+          },
+        })
+
+      connector.startConversation(defaultAddress, (err, address) => {
+        expect(address).toMatchObject({
+          ...defaultAddress,
+          conversation: { id: "BXXX:TXXX:DXXX" },
+        })
+
+        expect(stub.isDone()).toBeTruthy()
+        done()
+      })
+    })
+  })
+
   describe("send", () => {
     let msg: IMessage
 
