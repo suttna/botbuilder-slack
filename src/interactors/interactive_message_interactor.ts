@@ -1,4 +1,5 @@
-import { IMessage, Message } from "botbuilder"
+import { Message } from "botbuilder"
+import { Address } from "../address"
 import { UnauthorizedError } from "../errors"
 import { ISlackConnectorSettings } from "../slack_connector"
 import * as utils from "../utils"
@@ -15,31 +16,24 @@ export class InteractiveMessageInteractor {
 
     const [token, botIdentifier] = await this.settings.botLookup(this.envelope.team.id)
 
-    const address = utils.buildAddress(
-      this.envelope.team.id,
-      this.envelope.user.id,
-      this.envelope.channel.id,
-      botIdentifier,
-      this.settings.botName,
-      this.envelope.message_ts,
-    )
+    const botIdentity = utils.decomposeUserId(botIdentifier)
+
+    const address = new Address(botIdentity.team)
+      .user(this.envelope.user.id)
+      .channel(this.envelope.channel.id)
+      .bot(botIdentity.user, this.settings.botName)
+      .id(this.envelope.message_ts)
 
     const sourceEvent = this.buildInteractiveMessageSourceEvent(token)
 
     const message = new Message()
-      .address(address)
+      .address(address.toAddress())
       .timestamp(this.envelope.action_ts)
       .sourceEvent(sourceEvent)
       .text(this.envelope.actions[0].value)
+      .toMessage()
 
-    return {
-      events: [
-        {
-          ...message.toMessage(),
-          user: address.user,
-        } as IMessage,
-      ],
-    }
+    return { events: [message] }
   }
 
   public buildInteractiveMessageSourceEvent(token: string) {

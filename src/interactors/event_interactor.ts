@@ -1,6 +1,8 @@
-import { IConversationUpdate, IEvent, Message } from "botbuilder"
-import { CONVERSATION_UPDATE_EVENTS } from "../constants"
+import { IEvent, Message } from "botbuilder"
+import { Address } from "../address"
+import * as constants from "../constants"
 import { UnauthorizedError } from "../errors"
+import { ConversationUpdateEvent, InstallationUpdateEvent } from "../events"
 import { ISlackConnectorSettings } from "../slack_connector"
 import * as utils from "../utils"
 import { IInteractorResult } from "./"
@@ -36,6 +38,8 @@ export class EventInteractor {
         eventsToDispatch.push(this.buildMessageEvent(botId, token))
       } else if (this.isConversationUpdateEvent()) {
         eventsToDispatch.push(this.buildConversationUpdateEvent(botId, token))
+      } else if (this.isInstallationUpdateEvent()) {
+        eventsToDispatch.push(this.buildInstallationUpdateEvent(botId, token))
       } else {
         console.info("Unknown event received in SlackConnector. Ignoring...")
       }
@@ -50,92 +54,88 @@ export class EventInteractor {
     // FIXME: This is far from ideal. Temporary solution.
     const botUserId = this.envelope.authed_users[0]
     const sourceEvent = this.buildMessageSourceEvent(token)
+    const botIdentity = utils.decomposeUserId(botId)
 
-    const address = utils.buildAddress(
-      this.envelope.team_id,
-      this.event.user,
-      this.event.channel,
-      botId,
-      this.settings.botName,
-      this.event.event_ts,
-    )
+    const address = new Address(botIdentity.team)
+      .user(this.event.user)
+      .bot(botIdentity.user, this.settings.botName)
+      .channel(this.event.channel)
+      .id(this.event.event_ts)
 
     const messageEvent = this.event as ISlackMessageEvent
     const mentions = utils.extractMentions(messageEvent.text, this.envelope.team_id, botId, botUserId)
 
-    const message = new Message()
-      .address(address)
+    return new Message()
+      .address(address.toAddress())
       .timestamp(messageEvent.ts)
       .sourceEvent(sourceEvent)
       .entities(mentions)
       .text(
         this.enrichText(messageEvent.text, botUserId, botId),
       )
-
-    return {
-      ...message.toMessage(),
-      user: address.user,
-    } as IEvent
+      .toMessage()
   }
 
-  private buildConversationUpdateEvent(botId: string, token: string): IEvent {
-    const address = utils.buildAddress(
-      this.envelope.team_id,
-      "", // FIXME: We are setting the user in the switch
-      this.envelope.event.channel,
-      botId,
-      this.settings.botName,
-    )
+  private buildInstallationUpdateEvent(botId: string, token: string): IEvent {
+    const botIdentity = utils.decomposeUserId(botId)
 
-    let event: any = {
-      type: "conversationUpdate",
-      source: "slack",
-      agent: "botbuilder",
-      text: "",
-      attachments: [],
-      entities: [],
-      timestamp: this.event.event_ts,
-      sourceEvent: {
+    const address = new Address(botIdentity.team)
+      .user(botIdentity.user, this.settings.botName)
+      .bot(botIdentity.user, this.settings.botName)
+
+    return new InstallationUpdateEvent()
+      .address(address.toAddress())
+      .action("remove")
+      .sourceEvent({
         SlackMessage: {
           ...this.event,
         },
         ApiToken: token,
-      },
-    }
+      })
+      .toEvent()
+  }
+
+  private buildConversationUpdateEvent(botId: string, token: string): IEvent {
+    const botIdentity = utils.decomposeUserId(botId)
+
+    const address = new Address(botIdentity.team)
+      .bot(botIdentity.user, this.settings.botName)
+      .channel(this.envelope.event.channel)
+
+    const event = new ConversationUpdateEvent()
+      .timestamp(this.event.event_ts)
+      .sourceEvent({
+        SlackMessage: {
+          ...this.event,
+        },
+        ApiToken: token,
+      })
 
     switch (this.event.type) {
       case "member_joined_channel": {
         const mjEvent = this.event as ISlackMemberJoinedChannelEvent
         const newUser = utils.buildUserIdentity(mjEvent.user, this.envelope.team_id)
-        event = {
-          ...event,
-          membersAdded: [ newUser ],
-        }
-        address.user = newUser
+
+        event.membersAdded([newUser])
+        address.user(mjEvent.user)
 
         break
       }
       case "member_left_channel": {
         const mlEvent = this.event as ISlackMemberLeftChannelEvent
         const newUser = utils.buildUserIdentity(mlEvent.user, this.envelope.team_id)
-        event = {
-          ...event,
-          membersRemoved: [ newUser ],
-        }
-        address.user = newUser
+
+        event.membersRemoved([newUser])
+        address.user(mlEvent.user)
 
         break
       }
       default: {
-        address.user = address.bot
+        address.user(botIdentity.user, this.settings.botName)
       }
     }
 
-    return {
-      ...event,
-      address,
-      user: address.user,
-    } as IConversationUpdate
+    return event.address(address.toAddress()).toEvent()
   }
 
   private enrichText(text: string, botUserId: string, botId: string): string {
@@ -165,11 +165,17 @@ export class EventInteractor {
   }
 
   private isRoutableEvent(): boolean {
-    return this.isUserMessageEvent() || this.isConversationUpdateEvent()
+    return this.isUserMessageEvent() ||
+           this.isConversationUpdateEvent() ||
+           this.isInstallationUpdateEvent()
   }
 
   private isConversationUpdateEvent(): boolean {
-    return CONVERSATION_UPDATE_EVENTS.includes(this.event.type)
+    return constants.CONVERSATION_UPDATE_EVENTS.includes(this.event.type)
+  }
+
+  private isInstallationUpdateEvent(): boolean {
+    return constants.INSTALLATION_UPDATE_EVENTS.includes(this.event.type)
   }
 
   private isUserMessageEvent(): boolean {

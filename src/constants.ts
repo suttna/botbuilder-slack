@@ -10,3 +10,6 @@ export const CONVERSATION_UPDATE_EVENTS = [
   "member_joined_channel",
   "member_left_channel",
 ]
+export const INSTALLATION_UPDATE_EVENTS = [
+  "app_uninstalled",
+]

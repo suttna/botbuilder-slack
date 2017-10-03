@@ -1,6 +1,5 @@
 import { ChatPostMessageParams, MessageAttachment } from "@slack/client"
 import { IIdentity, IMessage } from "botbuilder"
-import { ISlackAddress } from "./slack_connector"
 
 export function isValidEnvelope(envelope: ISlackEnvelop, verificationToken: string): boolean {
   return envelope.token === verificationToken
@@ -95,41 +94,9 @@ export function buildSlackMessage(channel: string, message: IMessage): ChatPostM
   }
 }
 
-export function buildAddress(
-    teamId: string,
-    userId: string,
-    channelId: string,
-    botId: string,
-    botName: string,
-    messageId?: string): ISlackAddress {
-  const user = buildUserIdentity(userId, teamId)
-  const conversation = buildConversationIdentity(channelId, botId)
-  const bot = buildBotIdentity(botId, botName)
-
-  const address = {
-    channelId: "slack",
-    user,
-    bot,
-    conversation,
-  } as ISlackAddress
-
-  if (messageId) {
-    address.id = messageId
-  }
-
-  return address
-}
-
 export function buildUserIdentity(slackUserId: string, teamId: string): IIdentity {
   return {
     id: `${slackUserId}:${teamId}`,
-  }
-}
-
-export function buildBotIdentity(botId: string, botName: string): IIdentity {
-  return {
-    id: botId,
-    name: botName,
   }
 }
 

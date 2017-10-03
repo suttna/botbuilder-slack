@@ -1,9 +1,10 @@
 import { AuthAccessResult, WebClient } from "@slack/client"
 import { IEvent } from "botbuilder"
 
+import { Address } from "../address"
 import { OAuthAccessDeniedError } from "../errors"
+import { InstallationUpdateEvent } from "../events/installation_update"
 import { ISlackConnectorSettings } from "../slack_connector"
-import * as utils from "../utils"
 import { IInteractorResult } from "./"
 
 export interface IOAuthOptions {
@@ -36,33 +37,23 @@ export class OAuthInteractor {
 
   private async buildInstallationUpdateEvent(accessResult: AuthAccessResult): Promise<IEvent> {
     const botUser = await (new WebClient(accessResult.access_token).users.info(accessResult.bot.bot_user_id))
-    const bot = utils.buildBotIdentity(
-      utils.buildUserIdentity(botUser.user.profile.bot_id, accessResult.team_id).id,
-      botUser.user.name,
-    )
 
-    const address = {
-      channelId: "slack",
-      user: bot,
-      bot,
-    }
+    const address = new Address(accessResult.team_id)
+      .bot(botUser.user.profile.bot_id, botUser.user.name)
+      .user(botUser.user.profile.bot_id, botUser.user.name)
 
     // Remove the ok key
     delete accessResult.ok
 
-    return {
-      type: "installationUpdate",
-      source: "slack",
-      action: "add",
-      agent: "botbuilder",
-      sourceEvent: {
+    return new InstallationUpdateEvent()
+      .action("add")
+      .address(address.toAddress())
+      .sourceEvent({
         SlackMessage: {
           ...accessResult,
         },
         ApiToken: accessResult.bot.bot_access_token,
-      },
-      address,
-      user: bot,
-    } as IEvent
+      })
+      .toEvent()
   }
 }

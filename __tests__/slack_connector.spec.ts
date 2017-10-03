@@ -357,6 +357,20 @@ describe("SlackConnector", () => {
         event_ts: "1505227601.000491",
       }
 
+      describe("when the event type is app_uninstalled", () => {
+        it("dispatch a installationUpdate event", () => {
+          const event = {
+            type: "app_uninstalled",
+          }
+
+          return new ConnectorTester(connector, connector.listenEvents)
+            .withBody(buildEnvelope(event))
+            .expectToRespond(200)
+            .expectToDispatchEvent(expectedInstallationUpdateEvent(event))
+            .runTest()
+        })
+      })
+
       describe("when the event type is member_joined_channel", () => {
         it("dispatch a conversationUpdate event", () => {
           const event = {

@@ -1,12 +1,16 @@
-import { IEvent, IMessage } from "botbuilder"
+import { IEvent, IMessage, Message } from "botbuilder"
 import "jest"
+import { Address } from "../../src/address"
+import { CommandEvent, ConversationUpdateEvent, InstallationUpdateEvent } from "../../src/events"
 import { ISlackAddress } from "../../src/slack_connector"
 import { defaultInteractiveMessageEnvelope, defaultMessageEnvelope } from "./defaults"
 
 export function expectedMessage(event: ISlackMessageEvent, mentions: string[] = []): IMessage {
-  const user = { id: `${event.user}:${defaultMessageEnvelope.team_id}` }
-  const bot = { id: "BXXX:TXXX", name: "test_bot" }
-  const conversation = { id: `BXXX:TXXX:${event.channel}`, isGroup: true }
+  const address = new Address(defaultMessageEnvelope.team_id)
+    .bot("BXXX", "test_bot")
+    .user(event.user)
+    .channel(event.channel)
+    .id(event.event_ts)
 
   const entities = mentions.map((x) => {
     return {
@@ -18,67 +22,39 @@ export function expectedMessage(event: ISlackMessageEvent, mentions: string[] = 
     }
   })
 
-  return {
-    type: "message",
-    agent: "botbuilder",
-    source: "slack",
-    timestamp: event.ts,
-    entities,
-    user,
-    sourceEvent: {
-      SlackMessage: {
-        ...event,
-        team: defaultMessageEnvelope.team_id,
-        source_team: defaultMessageEnvelope.team_id,
+  return new Message()
+    .address(address.toAddress())
+    .text(event.text)
+    .timestamp(event.ts)
+    .sourceEvent({
+      slack: {
+        SlackMessage: {
+          ...event,
+          team: defaultMessageEnvelope.team_id,
+          source_team: defaultMessageEnvelope.team_id,
+        },
+        ApiToken: "XXX",
       },
-      ApiToken: "XXX",
-    },
-    text: event.text,
-    address: {
-      id: event.ts,
-      channelId: "slack",
-      user,
-      bot,
-      conversation,
-    } as ISlackAddress,
-  }
+    })
+    .entities(entities)
+    .toMessage()
 }
 
 export function expectedCommandEvent(envelope: ISlackCommandEnvelope): IEvent {
-  const bot = {
-    id: "BXXX:TXXX",
-    name: "test_bot",
-  }
+  const address = new Address("TXXX")
+    .bot("BXXX", "test_bot")
+    .user(envelope.user_id)
+    .channel(envelope.channel_id)
 
-  const user = {
-    id: `${envelope.user_id}:${envelope.team_id}`,
-  }
-
-  const conversation = {
-    id: `BXXX:TXXX:${envelope.channel_id}`,
-    isGroup: true,
-  }
-
-  return {
-    type: "slackCommand",
-    source: "slack",
-    agent: "botbuilder",
-    attachments: [],
-    entities: [],
-    user,
-    sourceEvent: {
+  return new CommandEvent()
+    .address(address.toAddress())
+    .sourceEvent({
       SlackMessage: {
         ...envelope,
       },
       ApiToken: "XXX",
-    },
-    address: {
-      channelId: "slack",
-      user,
-      bot,
-      conversation,
-    } as ISlackAddress,
-  } as IEvent
+    })
+    .toEvent()
 }
 
 export function expectedConversationUpdateEvent(event: ISlackEvent, isBotTheUser: boolean): IEvent {
@@ -96,100 +72,69 @@ export function expectedConversationUpdateEvent(event: ISlackEvent, isBotTheUser
     isGroup: true,
   }
 
-  let extraAttributes = {}
-
-  if (event.type === "member_joined_channel") {
-    extraAttributes = { membersAdded: [ user ] }
-  } else if (event.type === "member_left_channel") {
-    extraAttributes = { membersRemoved: [ user ] }
-  }
-
-  return {
-    type: "conversationUpdate",
-    source: "slack",
-    agent: "botbuilder",
-    timestamp: event.event_ts,
-    attachments: [],
-    entities: [],
-    user,
-    sourceEvent: {
+  const e = new ConversationUpdateEvent()
+    .address({
+      channelId: "slack",
+      user,
+      bot,
+      conversation,
+    })
+    .sourceEvent({
       SlackMessage: {
         ...event,
       },
       ApiToken: "XXX",
-    },
-    text: "",
-    address: {
-      channelId: "slack",
-      user,
-      bot,
-      conversation,
-    } as ISlackAddress,
-    ...extraAttributes,
-  } as IEvent
+    })
+    .timestamp(event.event_ts)
+
+  if (event.type === "member_joined_channel") {
+    e.membersAdded([user])
+  } else if (event.type === "member_left_channel") {
+    e.membersRemoved([user])
+  }
+
+  return e.toEvent()
 }
 
 export function expectedInteractiveMessage(action: any): IMessage {
-  const user = {
-    id: `${defaultInteractiveMessageEnvelope.user.id}:${defaultInteractiveMessageEnvelope.team.id}`,
-  }
+  const address = new Address(defaultInteractiveMessageEnvelope.team.id)
+    .bot("BXXX", "test_bot")
+    .user(defaultInteractiveMessageEnvelope.user.id)
+    .channel(defaultInteractiveMessageEnvelope.channel.id)
+    .id(defaultInteractiveMessageEnvelope.message_ts)
 
-  const bot = {
-    id: "BXXX:TXXX",
-    name: "test_bot",
-  }
-
-  const conversation = {
-    id: `BXXX:TXXX:${defaultInteractiveMessageEnvelope.channel.id}`,
-    isGroup: true,
-  }
-
-  return {
-    type: "message",
-    agent: "botbuilder",
-    source: "slack",
-    timestamp: defaultInteractiveMessageEnvelope.action_ts,
-    user,
-    sourceEvent: {
-      Payload: {
-        ...defaultInteractiveMessageEnvelope,
-        actions: [action],
+  return new Message()
+    .text(action.value)
+    .address(address.toAddress())
+    .timestamp(defaultInteractiveMessageEnvelope.action_ts)
+    .sourceEvent({
+      slack: {
+        Payload: {
+          ...defaultInteractiveMessageEnvelope,
+          actions: [action],
+        },
+        ApiToken: "XXX",
       },
-      ApiToken: "XXX",
-    },
-    text: action.value,
-    address: {
-      id: defaultInteractiveMessageEnvelope.message_ts,
-      channelId: "slack",
-      user,
-      bot,
-      conversation,
-    } as ISlackAddress,
-  }
+    })
+    .toMessage()
 }
 
-export function expectedInstallationUpdateEvent(accessResult: any): IEvent {
-  const bot = {
-    id: "BXXX:TXXX",
-    name: "test_bot",
-  }
+export function expectedInstallationUpdateEvent(event: any): IEvent {
+  const address = new Address("TXXX")
+    .bot("BXXX", "test_bot")
+    .user("BXXX", "test_bot")
 
-  return {
-    type: "installationUpdate",
-    source: "slack",
-    agent: "botbuilder",
-    action: "add",
-    sourceEvent: {
+  const token = event.type === "app_uninstalled" ? "XXX" : event.bot.bot_access_token
+  const action = event.type === "app_uninstalled" ? "remove" : "add"
+
+  return new InstallationUpdateEvent()
+    .address(address.toAddress())
+    .action(action)
+    .sourceEvent({
       SlackMessage: {
-        ...accessResult,
+        ...event,
       },
-      ApiToken: accessResult.bot.bot_access_token,
-    },
-    address: {
-      channelId: "slack",
-      user: bot,
-      bot,
-    },
-    user: bot,
-  } as IEvent
+      ApiToken: token,
+    })
+    .toEvent()
 }
