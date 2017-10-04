@@ -11,7 +11,7 @@ import * as interactors from "./interactors"
 import * as utils from "./utils"
 
 export interface ISlackAddress extends IAddress {
-  id: string
+  id?: string
 }
 
 export interface ISlackConnectorSettings {

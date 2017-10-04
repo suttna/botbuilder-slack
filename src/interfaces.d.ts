@@ -51,9 +51,9 @@ interface ISlackCommandEnvelope extends ISlackEnvelop {
 
 interface ISlackEvent {
   type: string
-  event_ts: string
+  event_ts?: string
   user?: string
-  channel: string
+  channel?: string
 }
 
 interface ISlackMessageEvent extends ISlackEvent {
@@ -70,6 +70,10 @@ interface ISlackMemberJoinedChannelEvent extends ISlackEvent {
   channel: string
   channel_type: string
   inviter: string
+}
+
+interface ISlackAppUninstalledEvent extends ISlackEvent {
+  type: "app_uninstalled"
 }
 
 interface ISlackMemberLeftChannelEvent extends ISlackEvent {

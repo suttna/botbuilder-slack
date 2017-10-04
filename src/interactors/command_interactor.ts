@@ -1,5 +1,7 @@
 import { IEvent } from "botbuilder"
+import { Address } from "../address"
 import { UnauthorizedError } from "../errors"
+import { CommandEvent } from "../events"
 import { ISlackConnectorSettings } from "../slack_connector"
 import * as utils from "../utils"
 import { IInteractorResult } from "./"
@@ -20,28 +22,20 @@ export class CommandInteractor {
   }
 
   private buildCommandEvent(token: string, botIdentifier: string): IEvent {
-    const address = utils.buildAddress(
-      this.envelope.team_id,
-      this.envelope.user_id,
-      this.envelope.channel_id,
-      botIdentifier,
-      this.settings.botName,
-    )
+    const botIdentity = utils.decomposeUserId(botIdentifier)
+    const address = new Address(botIdentity.team)
+      .user(this.envelope.user_id)
+      .bot(botIdentity.user, this.settings.botName)
+      .channel(this.envelope.channel_id)
 
-    return {
-      type: "slackCommand",
-      source: "slack",
-      agent: "botbuilder",
-      attachments: [],
-      entities: [],
-      sourceEvent: {
+    return new CommandEvent()
+      .address(address.toAddress())
+      .sourceEvent({
         SlackMessage: {
           ...this.envelope,
         },
         ApiToken: token,
-      },
-      address,
-      user: address.user,
-    } as IEvent
+      })
+      .toEvent()
   }
 }
