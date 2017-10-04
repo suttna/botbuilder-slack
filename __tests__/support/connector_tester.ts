@@ -1,7 +1,7 @@
 import { IConnector, IEvent } from "botbuilder"
-import { Request, Response } from "restify"
+import { IRequest, IResponse } from "../../src/http"
 
-export type RequestHandler = () => (req: Request, res: Response, next: () => void) => void
+export type RequestHandler = () => (req: IRequest, res: IResponse, next: () => void) => void
 
 export class ConnectorTester {
   private expectations: Array<() => void> = []
@@ -88,13 +88,13 @@ export class ConnectorTester {
 
   public runTest() {
     return new Promise((resolve) => {
-      const requestMock = jest.fn<Request>(() => ({
+      const requestMock = jest.fn<IRequest>(() => ({
         body: this.requestBody,
         params: this.requestParams,
         query: this.requestQuery,
       }))
 
-      const responseMock = jest.fn<Response>(() => ({
+      const responseMock = jest.fn<IResponse>(() => ({
         end: this.endMock,
         status: this.statusMock,
         header: this.headerMock,
