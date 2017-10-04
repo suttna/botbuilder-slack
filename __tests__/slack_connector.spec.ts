@@ -14,7 +14,7 @@ import {
   expectedMessage,
 } from "./support/expect"
 
-import { SlackConnector } from "../src/slack_connector"
+import { ISlackAddress, SlackConnector } from "../src/slack_connector"
 
 // Useful for debugging slack api calls
 //
@@ -159,6 +159,98 @@ describe("SlackConnector", () => {
           expect(stub.isDone()).toBeFalsy()
           done()
         })
+      })
+    })
+  })
+
+  describe("update", () => {
+    let msg: IMessage
+    const address = { ...defaultAddress, id: "1111" } as ISlackAddress
+
+    describe("when updating a text only message", () => {
+      beforeEach(() => {
+
+        msg = new Message().address(address).text("Testing...").toMessage()
+      })
+
+      it("invokes the slack api", (done) => {
+        const stub = nock("https://slack.com")
+          .post('/api/chat.update', "channel=CXXX&attachments=%5B%7B%22fallback%22%3A%22Testing...%22%2C%22pretext%22%3A%22Testing...%22%2C%22mrkdwn_in%22%3A%5B%22pretext%22%5D%7D%5D&ts=1111&text=&token=XXX") // tslint:disable-line
+          .reply(200, {
+            ok: true,
+            ts: "1111",
+            channel: "CXXX",
+          })
+
+        connector.update(msg, (err, anAddress) => {
+          expect(anAddress).toMatchObject(address)
+
+          expect(stub.isDone()).toBeTruthy()
+          done()
+        })
+      })
+    })
+
+    describe("when updating a message with attachments", () => {
+      beforeEach(() => {
+        const hero = new HeroCard()
+
+        hero
+          .title("Title!")
+          .subtitle("Subtitle!")
+          .buttons([
+            new CardAction().type("postBack").value("action?data=button1").title("Button 1"),
+            new CardAction().type("postBack").value("action?data=button2").title("Button 2"),
+          ])
+
+        msg = new Message()
+          .address(address)
+          .addAttachment(hero)
+          .text("This is another possible text")
+          .toMessage()
+      })
+
+      it("invokes the slack api", (done) => {
+        const stub = nock("https://slack.com")
+          .post("/api/chat.update", "channel=CXXX&attachments=%5B%7B%22fallback%22%3A%22This%20is%20another%20possible%20text%22%2C%22pretext%22%3A%22This%20is%20another%20possible%20text%22%2C%22mrkdwn_in%22%3A%5B%22pretext%22%5D%7D%2C%7B%22callback_id%22%3A%22botbuilder%22%2C%22fallback%22%3A%22This%20is%20another%20possible%20text%22%2C%22pretext%22%3A%22Title%21%22%2C%22title%22%3A%22Subtitle%21%22%2C%22mrkdwn_in%22%3A%5B%22text%22%2C%22pretext%22%5D%2C%22actions%22%3A%5B%7B%22type%22%3A%22button%22%2C%22name%22%3A%22Button%201%22%2C%22text%22%3A%22Button%201%22%2C%22value%22%3A%22action%3Fdata%3Dbutton1%22%7D%2C%7B%22type%22%3A%22button%22%2C%22name%22%3A%22Button%202%22%2C%22text%22%3A%22Button%202%22%2C%22value%22%3A%22action%3Fdata%3Dbutton2%22%7D%5D%7D%5D&ts=1111&text=&token=XXX") // tslint:disable-line
+          .reply(200, {
+            ok: true,
+            ts: "1111",
+            channel: "CXXX",
+          })
+
+        connector.update(msg, (err, anAddress) => {
+          expect(anAddress).toMatchObject(address)
+
+          expect(stub.isDone()).toBeTruthy()
+          done()
+        })
+      })
+    })
+  })
+
+  describe("delete", () => {
+    let msg: IMessage
+    const address = { ...defaultAddress, id: "1111" } as ISlackAddress
+
+    beforeEach(() => {
+      msg = new Message().address(address).text("Testing...").toMessage()
+    })
+
+    it("invokes the slack api", (done) => {
+      const stub = nock("https://slack.com")
+        .post('/api/chat.delete', "ts=1111&channel=CXXX&token=XXX") // tslint:disable-line
+        .reply(200, {
+          ok: true,
+          ts: "1111",
+          channel: "CXXX",
+        })
+
+      connector.delete(msg.address, (err) => {
+        expect(err).toBeNull()
+
+        expect(stub.isDone()).toBeTruthy()
+        done()
       })
     })
   })

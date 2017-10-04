@@ -152,9 +152,15 @@ export class SlackConnector implements IConnector {
     const { team, channel } = utils.decomposeConversationId(address.conversation.id)
 
     this.createClient(team)
-      .then((client) => {
-        // TODO: Support updating full messages
-        client.chat.update(address.id, channel, message.text)
+      .then(async (client) => {
+        const slackMessage = utils.buildSlackMessage(channel, message)
+        const response = await client.chat.update(address.id, channel, "", slackMessage)
+
+        if (response.ok) {
+          done(null, message.address)
+        } else {
+          done(new Error(response.error))
+        }
       })
   }
 
@@ -162,8 +168,10 @@ export class SlackConnector implements IConnector {
     const { team, channel } = utils.decomposeConversationId(address.conversation.id)
 
     this.createClient(team)
-      .then((client) => {
-        client.chat.delete(address.id, channel)
+      .then(async (client) => {
+        const response = await client.chat.delete(address.id, channel)
+
+        done(response.ok ? null : new Error(response.error))
       })
   }
 
