@@ -4,7 +4,6 @@ import {
 import * as Bluebird from "bluebird"
 import { IAddress, IConnector, IEvent, IMessage } from "botbuilder"
 import * as qs from "qs"
-import { Request, Response } from "restify"
 import { OAuthAccessDeniedError, UnauthorizedError } from "./errors"
 import * as http from "./http"
 import * as interactors from "./interactors"
@@ -34,7 +33,7 @@ export class SlackConnector implements IConnector {
   constructor(protected settings: ISlackConnectorSettings) { }
 
   public listenOAuth() {
-    return (req: Request, res: Response, next: () => void) => {
+    return (req: http.IRequest, res: http.IResponse, next: () => void) => {
       new interactors.OAuthInteractor(this.settings, req.query)
         .call()
         .then((result) => {
@@ -47,7 +46,7 @@ export class SlackConnector implements IConnector {
   }
 
   public listenCommands() {
-    return (req: Request, res: Response, next: () => void) => {
+    return (req: http.IRequest, res: http.IResponse, next: () => void) => {
       new interactors.CommandInteractor(this.settings, req.params)
         .call()
         .then((result) => {
@@ -60,7 +59,7 @@ export class SlackConnector implements IConnector {
   }
 
   public listenInteractiveMessages() {
-    return (req: Request, res: Response, next: () => void) => {
+    return (req: http.IRequest, res: http.IResponse, next: () => void) => {
       const payload = JSON.parse(
         qs.parse(req.body).payload,
       ) as ISlackInteractiveMessageEnvelope
@@ -77,7 +76,7 @@ export class SlackConnector implements IConnector {
   }
 
   public listenEvents() {
-    return (req: Request, res: Response, next: () => void) => {
+    return (req: http.IRequest, res: http.IResponse, next: () => void) => {
       new interactors.EventInteractor(this.settings, req.body)
         .call()
         .then((result) => {
@@ -241,7 +240,7 @@ export class SlackConnector implements IConnector {
     }
   }
 
-  private handleOAuthError(error: Error, res: Response, next: () => void) {
+  private handleOAuthError(error: Error, res: http.IResponse, next: () => void) {
     if (error instanceof OAuthAccessDeniedError) {
       http.handleRedirectRequest(this.settings.onOAuthAccessDeniedRedirectUrl, res, next)
     } else {
@@ -249,7 +248,7 @@ export class SlackConnector implements IConnector {
     }
   }
 
-  private handleError(error: Error, res: Response, next: () => void) {
+  private handleError(error: Error, res: http.IResponse, next: () => void) {
     if (error instanceof UnauthorizedError) {
       http.handleUnauthorizedRequest(res, next)
     } else {

@@ -1,4 +1,4 @@
-import * as restify from 'restify'
+import * as restify from "restify"
 import { UniversalBot, IEvent, IIdentity } from "botbuilder"
 import { SlackConnector } from "botbuilder-slack"
 

@@ -1,6 +1,6 @@
 import "jest"
 import * as qs from "qs"
-import { Request, Response } from "restify"
+import { IRequest, IResponse } from "../../src/http"
 import { SlackConnector } from "../../src/slack_connector"
 import { defaultInteractiveMessageEnvelope, defaultMessageEnvelope } from "./defaults"
 
@@ -28,11 +28,11 @@ export function dispatchEventEnvelop(
   envelope: ISlackEventEnvelope,
   endMock: jest.Mock<void>,
   next: () => void) {
-  const requestMock = jest.fn<Request>(() => ({
+  const requestMock = jest.fn<IRequest>(() => ({
     body: envelope,
   }))
 
-  const responseMock = jest.fn<Response>(() => ({
+  const responseMock = jest.fn<IResponse>(() => ({
     end: endMock,
     status: jest.fn(),
     header: jest.fn(),
@@ -49,11 +49,11 @@ export function dispatchCommandEnvelop(
   envelope: ISlackCommandEnvelope,
   endMock: jest.Mock<void>,
   next: () => void) {
-  const requestMock = jest.fn<Request>(() => ({
+  const requestMock = jest.fn<IRequest>(() => ({
     params: envelope,
   }))
 
-  const responseMock = jest.fn<Response>(() => ({
+  const responseMock = jest.fn<IResponse>(() => ({
     end: endMock,
     status: jest.fn(),
     header: jest.fn(),
@@ -93,11 +93,11 @@ export function dispatchInteractiveMessageEnvelope(
   next: () => void) {
   const payload = { payload: JSON.stringify(envelope) }
 
-  const requestMock = jest.fn<Request>(() => ({
+  const requestMock = jest.fn<IRequest>(() => ({
     body: qs.stringify(payload),
   }))
 
-  const responseMock = jest.fn<Response>(() => ({
+  const responseMock = jest.fn<IResponse>(() => ({
     end: endMock,
     status: jest.fn(),
     header: jest.fn(),
