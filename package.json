@@ -11,6 +11,7 @@
     "test": "jest --config jest.json --forceExit --runInBand --verbose",
     "posttest": "codecov -f coverage/*.json",
     "build": "yarn lint && tsc",
+    "docs": "typedoc --out docs lib/index.d.ts --mode file --gaID UA-102232188-2 --hideGenerator --readme none --name 'Botbuilder Slack' && touch docs/.nojekyll",
     "watch": "tsc --watch",
     "lint": "tslint 'src/**/*.ts' '__tests__/**/*.ts'",
     "lint:fix": "tslint 'src/**/*.ts' '__tests__/**/*.ts' --fix",
@@ -41,6 +42,7 @@
     "nock": "^9.0.14",
     "ts-jest": "^21.0.1",
     "tslint": "^5.7.0",
+    "typedoc": "^0.8.0",
     "typescript": "^2.5.2"
   }
 }
