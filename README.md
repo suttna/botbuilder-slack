@@ -165,6 +165,14 @@ app.post('/slack/command', connector.listenCommands())
 app.get('/slack/oauth', connector.listenOAuth())
 ```
 
+## Examples
+
+Take a look at the prebuilt example for more information [here](example/README.md)
+
+## Documentation
+
+You can find the documentation reference [here](https://suttna.github.io/botbuilder-slack/)
+
 ## Help
 
 If you want to help on improving this connector, adding more features and trying to standardize how bots communicate, please contact us at opensource@suttna.com.

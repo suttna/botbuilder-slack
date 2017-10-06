@@ -6,7 +6,8 @@
   "author": "Martin Fernandez <fmartin91@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node app.ts"
+    "start:restify": "ts-node src/restify.ts",
+    "start:express": "ts-node src/express.ts"
   },
   "keywords": [
     "bot",
@@ -17,13 +18,17 @@
     "connector"
   ],
   "dependencies": {
+    "body-parser": "^1.18.2",
     "botbuilder": "^3.9.1",
     "botbuilder-slack": "file:../",
+    "express": "^4.16.1",
     "restify": "^5.0.0"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.16.5",
+    "@types/express": "^4.0.37",
     "@types/node": "^8.0.28",
-    "@types/restify": "^5.0.3",
+    "@types/restify": "^5.0.5",
     "ts-node": "^3.3.0",
     "typescript": "^2.5.2"
   }
