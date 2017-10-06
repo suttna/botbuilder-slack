@@ -47,7 +47,7 @@ export class SlackConnector implements IConnector {
 
   public listenCommands() {
     return (req: http.IRequest, res: http.IResponse, next: () => void) => {
-      new interactors.CommandInteractor(this.settings, req.params)
+      new interactors.CommandInteractor(this.settings, req.body)
         .call()
         .then((result) => {
           this.dispatchEvents(result.events)

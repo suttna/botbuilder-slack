@@ -30,12 +30,6 @@ export class ConnectorTester {
     return this
   }
 
-  public withParams(params: any): this {
-    this.requestParams = params
-
-    return this
-  }
-
   public withQuery(queryParams: any): this {
     this.requestQuery = queryParams
 
@@ -90,7 +84,6 @@ export class ConnectorTester {
     return new Promise((resolve) => {
       const requestMock = jest.fn<IRequest>(() => ({
         body: this.requestBody,
-        params: this.requestParams,
         query: this.requestQuery,
       }))
 
