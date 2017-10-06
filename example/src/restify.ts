@@ -1,8 +1,6 @@
 import * as restify from "restify"
-import { UniversalBot, IEvent, IIdentity } from "botbuilder"
 import { SlackConnector } from "botbuilder-slack"
-
-type BotCache = { [key: string]: { identity: IIdentity, token: string } }
+import { createBot, BotCache } from "./bot"
 
 const botsCache: BotCache = {}
 
@@ -28,30 +26,18 @@ const connectorSettings = {
 
 const connector = new SlackConnector(connectorSettings)
 
-const bot = new UniversalBot(connector)
 const app = restify.createServer()
 
 app.use(restify.plugins.queryParser())
 app.use(restify.plugins.bodyParser())
 
-bot.on('installationUpdate', (event: IEvent) => {
-  console.info(`New bot installed by ${event.sourceEvent.SlackMessage.user_id}`)
-
-  botsCache[event.sourceEvent.SlackMessage.team_id] = {
-    identity: event.address.bot,
-    token: event.sourceEvent.ApiToken
-  }
-})
-
-bot.dialog('/', (session) => {
-  session.endDialog('pong')
-})
-
 app.listen(3000, () => {
   console.log("Bot is listening...")
 })
 
-app.post('/slack/events', connector.listenEvents())
-app.post('/slack/interactive', connector.listenInteractiveMessages())
-app.post('/slack/command', connector.listenCommands())
-app.get('/slack/oauth', connector.listenOAuth())
+app.post('/slack/events', connector.listenEvents() as restify.RequestHandlerType)
+app.post('/slack/interactive', connector.listenInteractiveMessages() as restify.RequestHandlerType)
+app.post('/slack/command', connector.listenCommands() as restify.RequestHandlerType)
+app.get('/slack/oauth', connector.listenOAuth() as restify.RequestHandlerType)
+
+createBot(connector, botsCache)
