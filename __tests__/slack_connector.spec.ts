@@ -348,7 +348,7 @@ describe("SlackConnector", () => {
     describe("when token is wrong", () => {
       it("responds with status code 400", () => {
         return new ConnectorTester(connector, connector.listenCommands)
-          .withParams({ ...envelope, token: "bad" })
+          .withBody({ ...envelope, token: "bad" })
           .expectToRespond(403)
           .runTest()
       })
@@ -357,7 +357,7 @@ describe("SlackConnector", () => {
     describe("when token is valid", () => {
       it("dispatches the event", () => {
         return new ConnectorTester(connector, connector.listenCommands)
-          .withParams(envelope)
+          .withBody(envelope)
           .expectToDispatchEvent(expectedCommandEvent(envelope))
           .expectToRespond(200)
           .runTest()
