@@ -121,8 +121,8 @@ export class SlackConnector implements IConnector {
 
         if (response.ok) {
           return {
-            id: response.ts,
             ...address,
+            id: response.ts,
           }
         } else {
           throw new Error(response.message)
