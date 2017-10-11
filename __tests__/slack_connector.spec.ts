@@ -78,6 +78,12 @@ describe("SlackConnector", () => {
   describe("send", () => {
     let msg: IMessage
 
+    beforeEach(() => {
+      // INFO: Botbuilder auto generates an id before creating the message in Slack.
+      //   We need to be sure that we're updating that fake id and returning the new one from Slack.
+      (defaultAddress as ISlackAddress).id = "1507762653.000073"
+    })
+
     describe("when sending a text only message", () => {
       beforeEach(() => {
         msg = new Message().address(defaultAddress).text("Testing...").toMessage()
@@ -93,12 +99,13 @@ describe("SlackConnector", () => {
           })
 
         connector.send([msg], (err, addresses) => {
+          expect((addresses[0] as ISlackAddress).id).toBe("1405895017.000506")
           expect(addresses[0]).toMatchObject({
-            id: "1405895017.000506",
             ...defaultAddress,
+            id: "1405895017.000506",
           })
-
           expect(stub.isDone()).toBeTruthy()
+
           done()
         })
       })
@@ -109,6 +116,7 @@ describe("SlackConnector", () => {
         const hero = new HeroCard()
 
         hero
+          .text("Text!")
           .title("Title!")
           .subtitle("Subtitle!")
           .buttons([
@@ -125,7 +133,7 @@ describe("SlackConnector", () => {
 
       it("invokes the slack api", (done) => {
         const stub = nock("https://slack.com")
-          .post("/api/chat.postMessage", "channel=CXXX&attachments=%5B%7B%22fallback%22%3A%22This%20is%20another%20possible%20text%22%2C%22pretext%22%3A%22This%20is%20another%20possible%20text%22%2C%22mrkdwn_in%22%3A%5B%22pretext%22%5D%7D%2C%7B%22callback_id%22%3A%22botbuilder%22%2C%22fallback%22%3A%22This%20is%20another%20possible%20text%22%2C%22pretext%22%3A%22Title%21%22%2C%22title%22%3A%22Subtitle%21%22%2C%22mrkdwn_in%22%3A%5B%22text%22%2C%22pretext%22%5D%2C%22actions%22%3A%5B%7B%22type%22%3A%22button%22%2C%22name%22%3A%22Button%201%22%2C%22text%22%3A%22Button%201%22%2C%22value%22%3A%22action%3Fdata%3Dbutton1%22%7D%2C%7B%22type%22%3A%22button%22%2C%22name%22%3A%22Button%202%22%2C%22text%22%3A%22Button%202%22%2C%22value%22%3A%22action%3Fdata%3Dbutton2%22%7D%5D%7D%5D&text=&token=XXX") // tslint:disable-line
+          .post("/api/chat.postMessage", "channel=CXXX&attachments=%5B%7B%22fallback%22%3A%22This%20is%20another%20possible%20text%22%2C%22pretext%22%3A%22This%20is%20another%20possible%20text%22%2C%22mrkdwn_in%22%3A%5B%22pretext%22%5D%7D%2C%7B%22callback_id%22%3A%22botbuilder%22%2C%22fallback%22%3A%22This%20is%20another%20possible%20text%22%2C%22pretext%22%3A%22Title%21%22%2C%22text%22%3A%22Text%21%22%2C%22title%22%3A%22Subtitle%21%22%2C%22mrkdwn_in%22%3A%5B%22text%22%2C%22pretext%22%5D%2C%22actions%22%3A%5B%7B%22type%22%3A%22button%22%2C%22name%22%3A%22Button%201%22%2C%22text%22%3A%22Button%201%22%2C%22value%22%3A%22action%3Fdata%3Dbutton1%22%7D%2C%7B%22type%22%3A%22button%22%2C%22name%22%3A%22Button%202%22%2C%22text%22%3A%22Button%202%22%2C%22value%22%3A%22action%3Fdata%3Dbutton2%22%7D%5D%7D%5D&text=&token=XXX") // tslint:disable-line
           .reply(200, {
             ok: true,
             ts: "1405895017.000506",
@@ -133,12 +141,13 @@ describe("SlackConnector", () => {
           })
 
         connector.send([msg], (err, addresses) => {
+          expect((addresses[0] as ISlackAddress).id).toBe("1405895017.000506")
           expect(addresses[0]).toMatchObject({
-            id: "1405895017.000506",
             ...defaultAddress,
+            id: "1405895017.000506",
           })
-
           expect(stub.isDone()).toBeTruthy()
+
           done()
         })
       })
@@ -196,6 +205,7 @@ describe("SlackConnector", () => {
         const hero = new HeroCard()
 
         hero
+          .text("Text!")
           .title("Title!")
           .subtitle("Subtitle!")
           .buttons([
@@ -212,7 +222,7 @@ describe("SlackConnector", () => {
 
       it("invokes the slack api", (done) => {
         const stub = nock("https://slack.com")
-          .post("/api/chat.update", "channel=CXXX&attachments=%5B%7B%22fallback%22%3A%22This%20is%20another%20possible%20text%22%2C%22pretext%22%3A%22This%20is%20another%20possible%20text%22%2C%22mrkdwn_in%22%3A%5B%22pretext%22%5D%7D%2C%7B%22callback_id%22%3A%22botbuilder%22%2C%22fallback%22%3A%22This%20is%20another%20possible%20text%22%2C%22pretext%22%3A%22Title%21%22%2C%22title%22%3A%22Subtitle%21%22%2C%22mrkdwn_in%22%3A%5B%22text%22%2C%22pretext%22%5D%2C%22actions%22%3A%5B%7B%22type%22%3A%22button%22%2C%22name%22%3A%22Button%201%22%2C%22text%22%3A%22Button%201%22%2C%22value%22%3A%22action%3Fdata%3Dbutton1%22%7D%2C%7B%22type%22%3A%22button%22%2C%22name%22%3A%22Button%202%22%2C%22text%22%3A%22Button%202%22%2C%22value%22%3A%22action%3Fdata%3Dbutton2%22%7D%5D%7D%5D&ts=1111&text=&token=XXX") // tslint:disable-line
+          .post("/api/chat.update", "channel=CXXX&attachments=%5B%7B%22fallback%22%3A%22This%20is%20another%20possible%20text%22%2C%22pretext%22%3A%22This%20is%20another%20possible%20text%22%2C%22mrkdwn_in%22%3A%5B%22pretext%22%5D%7D%2C%7B%22callback_id%22%3A%22botbuilder%22%2C%22fallback%22%3A%22This%20is%20another%20possible%20text%22%2C%22pretext%22%3A%22Title%21%22%2C%22text%22%3A%22Text%21%22%2C%22title%22%3A%22Subtitle%21%22%2C%22mrkdwn_in%22%3A%5B%22text%22%2C%22pretext%22%5D%2C%22actions%22%3A%5B%7B%22type%22%3A%22button%22%2C%22name%22%3A%22Button%201%22%2C%22text%22%3A%22Button%201%22%2C%22value%22%3A%22action%3Fdata%3Dbutton1%22%7D%2C%7B%22type%22%3A%22button%22%2C%22name%22%3A%22Button%202%22%2C%22text%22%3A%22Button%202%22%2C%22value%22%3A%22action%3Fdata%3Dbutton2%22%7D%5D%7D%5D&ts=1111&text=&token=XXX") // tslint:disable-line
           .reply(200, {
             ok: true,
             ts: "1111",

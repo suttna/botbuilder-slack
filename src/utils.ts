@@ -74,6 +74,7 @@ export function buildSlackMessage(channel: string, message: IMessage): ChatPostM
         callback_id: "botbuilder",
         fallback: message.text  || "",
         pretext: content.title  || "",
+        text: content.text || "",
         title: content.subtitle || "",
         mrkdwn_in: ["text", "pretext"],
         actions: content.buttons.map((x: any) => {
