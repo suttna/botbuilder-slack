@@ -53,7 +53,7 @@ interface ISlackEvent {
   type: string
   event_ts?: string
   user?: string
-  channel?: string
+  channel?: string | any
 }
 
 interface ISlackMessageEvent extends ISlackEvent {

@@ -14,8 +14,14 @@ export function createBot(connector: IConnector, botsCache: BotCache) {
     }
   })
 
+  bot.on('conversationUpdate', (event: IEvent) => {
+    console.info(`New conversation update event received:`)
+    console.info(event)
+  })
+
   bot.on('slackCommand', (event: IEvent) => {
-    console.info(`New slack command received ${event.sourceEvent.SlackMessage.command}`)
+    console.info(`New slack command received:`)
+    console.info(event)
   })
 
   bot.dialog('/', (session) => {

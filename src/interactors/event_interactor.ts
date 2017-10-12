@@ -100,7 +100,7 @@ export class EventInteractor {
 
     const address = new Address(botIdentity.team)
       .bot(botIdentity.user, this.settings.botName)
-      .channel(this.envelope.event.channel)
+      .channel(this.envelope.event.channel.id || this.envelope.event.channel)
 
     const event = new ConversationUpdateEvent()
       .timestamp(this.event.event_ts)
