@@ -67,7 +67,7 @@ export function expectedConversationUpdateEvent(event: ISlackEvent, isBotTheUser
   }
 
   const conversation = {
-    id: `BXXX:TXXX:${event.channel}`,
+    id: `BXXX:TXXX:${event.channel.id || event.channel}`,
     isGroup: true,
   }
 

@@ -505,6 +505,25 @@ describe("SlackConnector", () => {
         })
       })
 
+      describe("when the event type is group_rename", () => {
+        it("dispatch a conversationUpdate event", () => {
+          const event = {
+            type: "channel_rename",
+            channel: {
+                id: "CXXX",
+                name: "new_name",
+                created: 1360782804,
+            },
+          }
+
+          return new ConnectorTester(connector, connector.listenEvents)
+            .withBody(buildEnvelope(event))
+            .expectToRespond(200)
+            .expectToDispatchEvent(expectedConversationUpdateEvent(event, true))
+            .runTest()
+        })
+      })
+
       describe("when the event type is channel_archive", () => {
         it("dispatch a conversationUpdate event", () => {
           const event = {
@@ -584,7 +603,11 @@ describe("SlackConnector", () => {
         it("dispatch a conversationUpdate event", () => {
           const event = {
             type: "group_rename",
-            ...baseEvent,
+            channel: {
+                id: "GXXX",
+                name: "new_name",
+                created: 1360782804,
+            },
           }
 
           return new ConnectorTester(connector, connector.listenEvents)

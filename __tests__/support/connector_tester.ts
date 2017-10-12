@@ -7,7 +7,6 @@ export class ConnectorTester {
   private expectations: Array<() => void> = []
 
   private requestBody: any
-  private requestParams: any
   private requestQuery: any
 
   private endMock: jest.Mock<void>

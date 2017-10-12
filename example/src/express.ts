@@ -3,6 +3,7 @@ import * as bodyParser from "body-parser"
 import { SlackConnector } from "botbuilder-slack"
 import { createBot, BotCache } from "./bot"
 
+const port = process.env.PORT || 3000
 const botsCache: BotCache = {}
 
 const connectorSettings = {
@@ -32,8 +33,8 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded())
 
-app.listen(3000, () => {
-  console.log("Bot is listening...")
+app.listen(port, () => {
+  console.log(`Bot is listening on port ${port}`)
 })
 
 app.post('/slack/events', connector.listenEvents())
