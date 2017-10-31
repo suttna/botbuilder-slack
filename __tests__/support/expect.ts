@@ -118,22 +118,36 @@ export function expectedInteractiveMessage(action: any): IMessage {
     .toMessage()
 }
 
-export function expectedInstallationUpdateEvent(event: any): IEvent {
+export function expectedInstallationUpdateAddEvent(event: any): IEvent {
   const address = new Address("TXXX")
     .bot("BXXX", "test_bot")
-    .user("BXXX", "test_bot")
-
-  const token = event.type === "app_uninstalled" ? "XXX" : event.bot.bot_access_token
-  const action = event.type === "app_uninstalled" ? "remove" : "add"
+    .user(event.user_id)
 
   return new InstallationUpdateEvent()
     .address(address.toAddress())
-    .action(action)
+    .action("add")
     .sourceEvent({
       SlackMessage: {
         ...event,
       },
-      ApiToken: token,
+      ApiToken: event.bot.bot_access_token,
+    })
+    .toEvent()
+}
+
+export function expectedInstallationUpdateRemoveEvent(event: any): IEvent {
+  const address = new Address("TXXX")
+    .bot("BXXX", "test_bot")
+    .user("BXXX", "test_bot")
+
+  return new InstallationUpdateEvent()
+    .address(address.toAddress())
+    .action("remove")
+    .sourceEvent({
+      SlackMessage: {
+        ...event,
+      },
+      ApiToken: "XXX",
     })
     .toEvent()
 }

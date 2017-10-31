@@ -40,7 +40,7 @@ export class OAuthInteractor {
 
     const address = new Address(accessResult.team_id)
       .bot(botUser.user.profile.bot_id, botUser.user.name)
-      .user(botUser.user.profile.bot_id, botUser.user.name)
+      .user(accessResult.user_id)
 
     // Remove the ok key
     delete accessResult.ok
