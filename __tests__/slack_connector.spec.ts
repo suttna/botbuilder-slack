@@ -9,7 +9,8 @@ import { defaultAddress, defaultInteractiveMessageEnvelope, defaultMessageEnvelo
 import {
   expectedCommandEvent,
   expectedConversationUpdateEvent,
-  expectedInstallationUpdateEvent,
+  expectedInstallationUpdateAddEvent,
+  expectedInstallationUpdateRemoveEvent,
   expectedInteractiveMessage,
   expectedMessage,
 } from "./support/expect"
@@ -330,7 +331,7 @@ describe("SlackConnector", () => {
           return new ConnectorTester(connector, connector.listenOAuth)
             .withQuery({ code: "CODE" })
             .expectToRedirect("https://test.com/success")
-            .expectToDispatchEvent(expectedInstallationUpdateEvent(partialAccessResult))
+            .expectToDispatchEvent(expectedInstallationUpdateAddEvent(partialAccessResult))
             .then(() => expect(accessStub.isDone()).toBeTruthy())
             .then(() => expect(botStub.isDone()).toBeTruthy())
             .runTest()
@@ -468,7 +469,7 @@ describe("SlackConnector", () => {
           return new ConnectorTester(connector, connector.listenEvents)
             .withBody(buildEnvelope(event))
             .expectToRespond(200)
-            .expectToDispatchEvent(expectedInstallationUpdateEvent(event))
+            .expectToDispatchEvent(expectedInstallationUpdateRemoveEvent(event))
             .runTest()
         })
       })
