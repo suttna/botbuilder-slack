@@ -2,8 +2,6 @@
 
 # botbuilder-slack [![npm version](https://badge.fury.io/js/botbuilder-slack.svg)](https://badge.fury.io/js/botbuilder-slack) [![CircleCI](https://circleci.com/gh/suttna/botbuilder-slack.svg?style=svg)](https://circleci.com/gh/suttna/botbuilder-slack) [![codecov](https://codecov.io/gh/suttna/botbuilder-slack/branch/master/graph/badge.svg)](https://codecov.io/gh/suttna/botbuilder-slack) [![Join the chat at https://gitter.im/suttna/botbuilder-slack](https://badges.gitter.im/suttna/botbuilder-slack.svg)](https://gitter.im/suttna/botbuilder-slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-⚠️  **This is under development. If you want to help 🚀, please contact the Suttna team at opensource@suttna.com**
-
 Slack connector for Microsoft BotBuilder.
 
 This connector was created at [Suttna](https://suttna.com) to tackle some of the limitations of BotFramework's current Slack connector.
