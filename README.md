@@ -67,7 +67,7 @@ yarn add botbuilder-slack@next
 
 ## Configuration
 
-In order to use all the connector features you will need to configure Slack's OAuth, Slack's Event Subscriptions, Slack's Interactive messages and Slack's commands. Configure only the options that your bot is going to use
+In order to use all the connector features you will need to configure Slack's OAuth, Slack's Event Subscriptions, Slack's Interactive messages and Slack's commands. Configure only the options that your bot is going to use.
 
 ### OAuth
 
@@ -165,11 +165,11 @@ app.get('/slack/oauth', connector.listenOAuth())
 
 ## Examples
 
-Take a look at the prebuilt example for more information [here](example/README.md)
+Take a look at the prebuilt example for more information [here](example/README.md).
 
 ## Documentation
 
-You can find the documentation reference [here](https://suttna.github.io/botbuilder-slack/)
+You can find the documentation reference [here](https://suttna.github.io/botbuilder-slack/).
 
 ## Help
 
