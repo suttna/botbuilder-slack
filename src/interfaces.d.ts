@@ -1,5 +1,7 @@
 type EventEnvelopeType = "url_verification" | "event_callback"
 
+type Nullable<T> = { [P in keyof T]: T[P] | null }
+
 interface IMention {
   type: "mention"
   mentioned: {
@@ -7,6 +9,15 @@ interface IMention {
     name?: string,
   }
   text: string
+}
+
+interface ISlackDataCache {
+  findUsers: (userIds: string[]) => Promise<ISlackUser[]>
+}
+
+interface ISlackUser {
+  id: string
+  name: string
 }
 
 interface ISlackEnvelop {

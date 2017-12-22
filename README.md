@@ -101,6 +101,14 @@ You need to setup a URL that will listen for interactive message callbacks. Look
 
 You need to setup a URL that will listen for commands. Look at the usage example to have a better understanding.
 
+### Data Cache
+
+If you want to enrich the data the connector sends to your bot, you can provide a `ISlackDataCache`. At the
+moment the data cache is only used for:
+
+- Adding the user's name in the address
+- Adding the user's name to a mention.
+
 ## Usage
 
 ```javascript

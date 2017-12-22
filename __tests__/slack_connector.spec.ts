@@ -4,7 +4,7 @@ import { CardAction, HeroCard, IEvent, IMessage, Message } from "botbuilder"
 import * as nock from "nock"
 import * as qs from "qs"
 import { ConnectorTester } from "./support/connector_tester"
-import { defaultAddress, defaultInteractiveMessageEnvelope, defaultMessageEnvelope } from "./support/defaults"
+import * as defaults from "./support/defaults"
 
 import {
   expectedCommandEvent,
@@ -43,6 +43,7 @@ describe("SlackConnector", () => {
       onOAuthSuccessRedirectUrl: "https://test.com/success",
       onOAuthErrorRedirectUrl: "https://test.com/error",
       onOAuthAccessDeniedRedirectUrl: "https://test.com/denied",
+      dataCache: defaults.defaultDataCache,
     })
 
     onDispatchMock = jest.fn<any>()
@@ -64,9 +65,9 @@ describe("SlackConnector", () => {
           },
         })
 
-      connector.startConversation(defaultAddress, (err, address) => {
+      connector.startConversation(defaults.defaultAddress, (err, address) => {
         expect(address).toMatchObject({
-          ...defaultAddress,
+          ...defaults.defaultAddress,
           conversation: { id: "BXXX:TXXX:DXXX" },
         })
 
@@ -82,12 +83,12 @@ describe("SlackConnector", () => {
     beforeEach(() => {
       // INFO: Botbuilder auto generates an id before creating the message in Slack.
       //   We need to be sure that we're updating that fake id and returning the new one from Slack.
-      (defaultAddress as ISlackAddress).id = "1507762653.000073"
+      (defaults.defaultAddress as ISlackAddress).id = "1507762653.000073"
     })
 
     describe("when sending a text only message", () => {
       beforeEach(() => {
-        msg = new Message().address(defaultAddress).text("Testing...").toMessage()
+        msg = new Message().address(defaults.defaultAddress).text("Testing...").toMessage()
       })
 
       it("invokes the slack api", (done) => {
@@ -102,7 +103,7 @@ describe("SlackConnector", () => {
         connector.send([msg], (err, addresses) => {
           expect((addresses[0] as ISlackAddress).id).toBe("1405895017.000506")
           expect(addresses[0]).toMatchObject({
-            ...defaultAddress,
+            ...defaults.defaultAddress,
             id: "1405895017.000506",
           })
           expect(stub.isDone()).toBeTruthy()
@@ -126,7 +127,7 @@ describe("SlackConnector", () => {
           ])
 
         msg = new Message()
-          .address(defaultAddress)
+          .address(defaults.defaultAddress)
           .addAttachment(hero)
           .text("This is another possible text")
           .toMessage()
@@ -144,7 +145,7 @@ describe("SlackConnector", () => {
         connector.send([msg], (err, addresses) => {
           expect((addresses[0] as ISlackAddress).id).toBe("1405895017.000506")
           expect(addresses[0]).toMatchObject({
-            ...defaultAddress,
+            ...defaults.defaultAddress,
             id: "1405895017.000506",
           })
           expect(stub.isDone()).toBeTruthy()
@@ -156,7 +157,7 @@ describe("SlackConnector", () => {
 
     describe("when sending a endOfConversation message type", () => {
       beforeEach(() => {
-        msg = { type: "endOfConversation", address: defaultAddress } as IMessage
+        msg = { type: "endOfConversation", address: defaults.defaultAddress } as IMessage
       })
 
       it("doesn't invoke the slack api", (done) => {
@@ -165,7 +166,7 @@ describe("SlackConnector", () => {
           .reply(200)
 
         connector.send([msg], (err, addresses) => {
-          expect(addresses[0]).toMatchObject(defaultAddress)
+          expect(addresses[0]).toMatchObject(defaults.defaultAddress)
           expect(stub.isDone()).toBeFalsy()
           done()
         })
@@ -175,7 +176,7 @@ describe("SlackConnector", () => {
 
   describe("update", () => {
     let msg: IMessage
-    const address = { ...defaultAddress, id: "1111" } as ISlackAddress
+    const address = { ...defaults.defaultAddress, id: "1111" } as ISlackAddress
 
     describe("when updating a text only message", () => {
       beforeEach(() => {
@@ -242,7 +243,7 @@ describe("SlackConnector", () => {
 
   describe("delete", () => {
     let msg: IMessage
-    const address = { ...defaultAddress, id: "1111" } as ISlackAddress
+    const address = { ...defaults.defaultAddress, id: "1111" } as ISlackAddress
 
     beforeEach(() => {
       msg = new Message().address(address).text("Testing...").toMessage()
@@ -407,7 +408,7 @@ describe("SlackConnector", () => {
       }
 
       const envelope = {
-        ...defaultInteractiveMessageEnvelope,
+        ...defaults.defaultInteractiveMessageEnvelope,
         actions: [ action ],
       } as any
 
@@ -421,7 +422,7 @@ describe("SlackConnector", () => {
 
   describe("listenEvents", () => {
     const buildEnvelope = (event: ISlackEvent) => {
-      return { ...defaultMessageEnvelope, event }
+      return { ...defaults.defaultMessageEnvelope, event }
     }
 
     describe("when token is wrong", () => {
@@ -688,7 +689,7 @@ describe("SlackConnector", () => {
           return new ConnectorTester(connector, connector.listenEvents)
             .withBody(buildEnvelope(event))
             .expectToRespond(200)
-            .expectToDispatchEvent(expectedMessage(event, ["UZZZ"]))
+            .expectToDispatchEvent(expectedMessage(event, [{ id: "UZZZ", name: "User Z" }]))
             .runTest()
         })
       })

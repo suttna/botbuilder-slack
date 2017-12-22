@@ -20,5 +20,4 @@ deployment:
   next:
     branch: master
     commands:
-      - scripts/prerelease.sh
       - scripts/docs.sh

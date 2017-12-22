@@ -1,4 +1,4 @@
-import { IEvent, Message } from "botbuilder"
+import { IEvent, IIdentity, Message } from "botbuilder"
 import { Address } from "../address"
 import * as constants from "../constants"
 import { UnauthorizedError } from "../errors"
@@ -35,11 +35,11 @@ export class EventInteractor {
       }
 
       if (this.isUserMessageEvent()) {
-        eventsToDispatch.push(this.buildMessageEvent(botId, token))
+        eventsToDispatch.push(await this.buildMessageEvent(botId, token))
       } else if (this.isConversationUpdateEvent()) {
-        eventsToDispatch.push(this.buildConversationUpdateEvent(botId, token))
+        eventsToDispatch.push(await this.buildConversationUpdateEvent(botId, token))
       } else if (this.isInstallationUpdateEvent()) {
-        eventsToDispatch.push(this.buildInstallationUpdateEvent(botId, token))
+        eventsToDispatch.push(await this.buildInstallationUpdateEvent(botId, token))
       } else {
         console.info("Unknown event received in SlackConnector. Ignoring...")
       }
@@ -50,20 +50,27 @@ export class EventInteractor {
     return { events: [] }
   }
 
-  private buildMessageEvent(botId: string, token: string): IEvent {
+  private async buildMessageEvent(botId: string, token: string): Promise<IEvent> {
     // FIXME: This is far from ideal. Temporary solution.
-    const botUserId = this.envelope.authed_users[0]
-    const sourceEvent = this.buildMessageSourceEvent(token)
-    const botIdentity = utils.decomposeUserId(botId)
+    const botUserId    = this.envelope.authed_users[0]
+    const sourceEvent  = this.buildMessageSourceEvent(token)
+    const botIdentity  = utils.decomposeUserId(botId)
+    const userIdentity = await this.buildUser(botId, this.event.user)
 
     const address = new Address(botIdentity.team)
-      .user(this.event.user)
+      .user(this.event.user, userIdentity.name)
       .bot(botIdentity.user, this.settings.botName)
       .channel(this.event.channel)
       .id(this.event.event_ts)
 
     const messageEvent = this.event as ISlackMessageEvent
-    const mentions = utils.extractMentions(messageEvent.text, this.envelope.team_id, botId, botUserId)
+    const mentions = await utils.extractMentions({
+      text: messageEvent.text,
+      teamId: this.envelope.team_id,
+      botId,
+      botUserId,
+      dataCache: this.settings.dataCache,
+    })
 
     return new Message()
       .address(address.toAddress())
@@ -76,7 +83,7 @@ export class EventInteractor {
       .toMessage()
   }
 
-  private buildInstallationUpdateEvent(botId: string, token: string): IEvent {
+  private async buildInstallationUpdateEvent(botId: string, token: string): Promise<IEvent> {
     const botIdentity = utils.decomposeUserId(botId)
 
     const address = new Address(botIdentity.team)
@@ -95,7 +102,7 @@ export class EventInteractor {
       .toEvent()
   }
 
-  private buildConversationUpdateEvent(botId: string, token: string): IEvent {
+  private async buildConversationUpdateEvent(botId: string, token: string): Promise<IEvent> {
     const botIdentity = utils.decomposeUserId(botId)
 
     const address = new Address(botIdentity.team)
@@ -114,19 +121,20 @@ export class EventInteractor {
     switch (this.event.type) {
       case "member_joined_channel": {
         const mjEvent = this.event as ISlackMemberJoinedChannelEvent
-        const newUser = utils.buildUserIdentity(mjEvent.user, this.envelope.team_id)
+        const userIdentity = await this.buildUser(botId, mjEvent.user)
 
-        event.membersAdded([newUser])
-        address.user(mjEvent.user)
+        event.membersAdded([userIdentity])
+
+        address.user(mjEvent.user, userIdentity.name)
 
         break
       }
       case "member_left_channel": {
         const mlEvent = this.event as ISlackMemberLeftChannelEvent
-        const newUser = utils.buildUserIdentity(mlEvent.user, this.envelope.team_id)
+        const userIdentity = await this.buildUser(botId, mlEvent.user)
 
-        event.membersRemoved([newUser])
-        address.user(mlEvent.user)
+        event.membersRemoved([userIdentity])
+        address.user(mlEvent.user, userIdentity.name)
 
         break
       }
@@ -149,6 +157,23 @@ export class EventInteractor {
     return matches.reduce((x) => {
       return text.replace(pattern, botMention)
     }, text)
+  }
+
+  private async buildUser(botbuilderBotId: string, userId: string): Promise<IIdentity> {
+    if (!this.settings.dataCache) {
+      return null
+    }
+
+    const botId        = utils.decomposeUserId(botbuilderBotId)
+    const userIdentity = utils.buildUserIdentity(userId, botId.team)
+
+    const [cachedUser] = await this.settings.dataCache.findUsers([userIdentity.id])
+
+    if (cachedUser) {
+      userIdentity.name = cachedUser.name
+    }
+
+    return userIdentity
   }
 
   private buildMessageSourceEvent(token: string) {
