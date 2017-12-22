@@ -1,8 +1,19 @@
 import { IAddress } from "botbuilder"
 
-export const defaultTeam = "TXXX"
-export const defaultBot = "BXXX"
-export const defaulChannel = "CXXX"
+export const defaultTeam    = "TXXX"
+export const defaultBot     = "BXXX"
+export const defaultBotUser = "UBXX"
+export const defaulChannel  = "CXXX"
+export const defaultUser    = "UXXX"
+
+export const defaultDataCache = {
+  findUsers: (userIds: string[]) => {
+    return Promise.resolve([
+      { id: "UXXX:TXXX", name: "User X" },
+      { id: "UZZZ:TXXX", name: "User Z" },
+    ].filter((x) => userIds.includes(x.id)))
+  },
+}
 
 export const defaultAddress: IAddress = {
   channelId: "slack",

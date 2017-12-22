@@ -10,13 +10,15 @@
   "scripts": {
     "test": "jest --config jest.json --forceExit --runInBand --verbose",
     "posttest": "codecov -f coverage/*.json",
-    "build": "yarn lint && tsc",
+    "build": "yarn build:src",
+    "build:src": "tsc",
+    "build:tests": "tsc -p __tests__/tsconfig.json",
     "docs": "typedoc --out docs lib/index.d.ts --mode file --gaID UA-102232188-2 --hideGenerator --readme none --name 'Botbuilder Slack' && touch docs/.nojekyll",
     "watch": "tsc --watch",
     "lint": "tslint 'src/**/*.ts' '__tests__/**/*.ts'",
     "lint:fix": "tslint 'src/**/*.ts' '__tests__/**/*.ts' --fix",
-    "ci": "yarn lint && yarn build && yarn test",
-    "prepublish": "yarn build"
+    "ci": "yarn lint && yarn build:src && yarn build:tests && yarn test",
+    "prepare": "yarn build"
   },
   "keywords": [
     "bot",

@@ -23,6 +23,7 @@ export interface ISlackConnectorSettings {
   onOAuthSuccessRedirectUrl: string
   onOAuthErrorRedirectUrl: string
   onOAuthAccessDeniedRedirectUrl: string
+  dataCache?: ISlackDataCache
 }
 
 export class SlackConnector implements IConnector {

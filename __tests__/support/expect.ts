@@ -1,22 +1,23 @@
-import { IEvent, IMessage, Message } from "botbuilder"
+import { IEvent, IIdentity, IMessage, Message } from "botbuilder"
 import "jest"
 import { Address } from "../../src/address"
 import { CommandEvent, ConversationUpdateEvent, InstallationUpdateEvent } from "../../src/events"
 import { defaultInteractiveMessageEnvelope, defaultMessageEnvelope } from "./defaults"
 
-export function expectedMessage(event: ISlackMessageEvent, mentions: string[] = []): IMessage {
+export function expectedMessage(event: ISlackMessageEvent, mentions: IIdentity[] = []): IMessage {
   const address = new Address(defaultMessageEnvelope.team_id)
     .bot("BXXX", "test_bot")
-    .user(event.user)
+    .user(event.user, "User X")
     .channel(event.channel)
     .id(event.event_ts)
 
   const entities = mentions.map((x) => {
     return {
       type: "mention",
-      text: `<@${x}>`,
+      text: `<@${x.id}>`,
       mentioned: {
-        id: `${x}:TXXX`,
+        id: `${x.id}:TXXX`,
+        name: x.name,
       },
     }
   })
@@ -64,6 +65,7 @@ export function expectedConversationUpdateEvent(event: ISlackEvent, isBotTheUser
 
   const user = isBotTheUser ? bot : {
     id: `${event.user}:${defaultMessageEnvelope.team_id}`,
+    name: "User X",
   }
 
   const conversation = {

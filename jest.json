@@ -12,7 +12,7 @@
     "json"
   ],
   "setupTestFrameworkScriptFile": "./__tests__/support/index.ts",
-  "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
+  "testRegex": "(__tests__.*\\.ts)$",
   "testPathIgnorePatterns": [
     "/node_modules/",
     "__tests__/support/"

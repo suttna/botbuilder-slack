@@ -1,6 +1,14 @@
 import { ChatPostMessageParams, MessageAttachment } from "@slack/client"
 import { IIdentity, IMessage } from "botbuilder"
 
+export interface IMentionRequest {
+  text: string
+  teamId: string
+  botId: string
+  botUserId: string
+  dataCache?: ISlackDataCache
+}
+
 export function isValidEnvelope(envelope: ISlackEnvelop, verificationToken: string): boolean {
   return envelope.token === verificationToken
 }
@@ -24,20 +32,20 @@ export function decomposeUserId(userId: string): ISlackUserIdentifier {
   }
 }
 
-export function extractMentions(text: string, teamId: string, botId: string, botUserId: string): IMention[] {
-  const matches = text.match(/<@(\w+)>/g)
+export async function extractMentions(request: IMentionRequest): Promise<IMention[]> {
+  const matches = request.text.match(/<@(\w+)>/g)
 
   // Skip if no matches
   if (!matches) { return [] }
 
-  return matches.map((x) => {
+  const mentions = matches.map((x) => {
     const userId = x.replace("<@", "").replace(">", "")
 
     const buildMentionId = (id: string) => {
-      if (id === botUserId) {
-        return botId
+      if (id === request.botUserId) {
+        return request.botId
       } else {
-        return `${id}:${teamId}`
+        return `${id}:${request.teamId}`
       }
     }
 
@@ -51,6 +59,25 @@ export function extractMentions(text: string, teamId: string, botId: string, bot
 
     return mention
   })
+
+  // Return the parsed mentions if we don't have a cache for enrichment
+  if (!request.dataCache) {
+    return mentions
+  }
+
+  const users = await request.dataCache.findUsers(mentions.map((x) => x.mentioned.id))
+
+  return mentions.map((m) => enrichMention(m, users))
+}
+
+function enrichMention(mention: IMention, users: ISlackUser[]): IMention {
+  const cachedUser = users.find((c) => c.id === mention.mentioned.id)
+
+  if (cachedUser) {
+    mention.mentioned.name = cachedUser.name
+  }
+
+  return mention
 }
 
 export function buildSlackMessage(channel: string, message: IMessage): ChatPostMessageParams {
