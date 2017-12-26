@@ -70,7 +70,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">InteractiveMessageInteractor</span>
+						<a href="baseinteractor.html" class="tsd-signature-type">BaseInteractor</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/islackinteractivemessageenvelope.html" class="tsd-signature-type">ISlackInteractiveMessageEnvelope</a><span class="tsd-signature-symbol">&gt;</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">InteractiveMessageInteractor</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -78,42 +83,44 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="interactivemessageinteractor.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="interactivemessageinteractor.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="interactivemessageinteractor.html#envelope" class="tsd-kind-icon">envelope</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="interactivemessageinteractor.html#settings" class="tsd-kind-icon">settings</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivemessageinteractor.html#envelope" class="tsd-kind-icon">envelope</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivemessageinteractor.html#settings" class="tsd-kind-icon">settings</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="interactivemessageinteractor.html#buildinteractivemessagesourceevent" class="tsd-kind-icon">build<wbr>Interactive<wbr>Message<wbr>Source<wbr>Event</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="interactivemessageinteractor.html#call" class="tsd-kind-icon">call</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="interactivemessageinteractor.html#builduser" class="tsd-kind-icon">build<wbr>User</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="interactivemessageinteractor.html#call" class="tsd-kind-icon">call</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">new <wbr>Interactive<wbr>Message<wbr>Interactor<span class="tsd-signature-symbol">(</span>settings<span class="tsd-signature-symbol">: </span><a href="../interfaces/islackconnectorsettings.html" class="tsd-signature-type">ISlackConnectorSettings</a>, envelope<span class="tsd-signature-symbol">: </span><a href="../interfaces/islackinteractivemessageenvelope.html" class="tsd-signature-type">ISlackInteractiveMessageEnvelope</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interactivemessageinteractor.html" class="tsd-signature-type">InteractiveMessageInteractor</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="baseinteractor.html">BaseInteractor</a>.<a href="baseinteractor.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/d7a5350/src/interactors/interactive_message_interactor.ts#L9">interactors/interactive_message_interactor.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/39b9629/src/interactors/base_interactor.ts#L13">interactors/base_interactor.ts:13</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -130,25 +137,27 @@
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="envelope" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> envelope</h3>
+					<h3>envelope</h3>
 					<div class="tsd-signature tsd-kind-icon">envelope<span class="tsd-signature-symbol">:</span> <a href="../interfaces/islackinteractivemessageenvelope.html" class="tsd-signature-type">ISlackInteractiveMessageEnvelope</a></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="baseinteractor.html">BaseInteractor</a>.<a href="baseinteractor.html#envelope">envelope</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/d7a5350/src/interactors/interactive_message_interactor.ts#L11">interactors/interactive_message_interactor.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/39b9629/src/interactors/base_interactor.ts#L13">interactors/base_interactor.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="settings" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> settings</h3>
+					<h3>settings</h3>
 					<div class="tsd-signature tsd-kind-icon">settings<span class="tsd-signature-symbol">:</span> <a href="../interfaces/islackconnectorsettings.html" class="tsd-signature-type">ISlackConnectorSettings</a></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="baseinteractor.html">BaseInteractor</a>.<a href="baseinteractor.html#settings">settings</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/d7a5350/src/interactors/interactive_message_interactor.ts#L11">interactors/interactive_message_interactor.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/39b9629/src/interactors/base_interactor.ts#L12">interactors/base_interactor.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -165,7 +174,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/d7a5350/src/interactors/interactive_message_interactor.ts#L40">interactors/interactive_message_interactor.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/39b9629/src/interactors/interactive_message_interactor.ts#L37">interactors/interactive_message_interactor.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -191,17 +200,45 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="builduser" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> build<wbr>User</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">build<wbr>User<span class="tsd-signature-symbol">(</span>botbuilderBotId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, userId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IIdentity</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="baseinteractor.html">BaseInteractor</a>.<a href="baseinteractor.html#builduser">buildUser</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/39b9629/src/interactors/base_interactor.ts#L22">interactors/base_interactor.ts:22</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>botbuilderBotId: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>userId: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IIdentity</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 					<a name="call" class="tsd-anchor"></a>
 					<h3>call</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 						<li class="tsd-signature tsd-kind-icon">call<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinteractorresult.html" class="tsd-signature-type">IInteractorResult</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Overrides <a href="baseinteractor.html">BaseInteractor</a>.<a href="baseinteractor.html#call">call</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/d7a5350/src/interactors/interactive_message_interactor.ts#L13">interactors/interactive_message_interactor.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/39b9629/src/interactors/interactive_message_interactor.ts#L9">interactors/interactive_message_interactor.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinteractorresult.html" class="tsd-signature-type">IInteractorResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -225,19 +262,22 @@
 					<li class="current tsd-kind-class">
 						<a href="interactivemessageinteractor.html" class="tsd-kind-icon">Interactive<wbr>Message<wbr>Interactor</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
 								<a href="interactivemessageinteractor.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="interactivemessageinteractor.html#envelope" class="tsd-kind-icon">envelope</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="interactivemessageinteractor.html#settings" class="tsd-kind-icon">settings</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="interactivemessageinteractor.html#buildinteractivemessagesourceevent" class="tsd-kind-icon">build<wbr>Interactive<wbr>Message<wbr>Source<wbr>Event</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="interactivemessageinteractor.html#builduser" class="tsd-kind-icon">build<wbr>User</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="interactivemessageinteractor.html#call" class="tsd-kind-icon">call</a>
 							</li>
 						</ul>
