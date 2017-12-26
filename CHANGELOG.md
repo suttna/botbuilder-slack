@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.1.1](https://github.com/suttna/botbuilder-slack/tree/v1.1.1) (2017-12-26)
+[Full Changelog](https://github.com/suttna/botbuilder-slack/compare/v1.1.0...v1.1.1)
+
+**Merged pull requests:**
+
+- Fix address name on interactive messages and commands [\#27](https://github.com/suttna/botbuilder-slack/pull/27) ([bilby91](https://github.com/bilby91))
+
 ## [v1.1.0](https://github.com/suttna/botbuilder-slack/tree/v1.1.0) (2017-12-26)
 [Full Changelog](https://github.com/suttna/botbuilder-slack/compare/v1.0.1-1...v1.1.0)
 
