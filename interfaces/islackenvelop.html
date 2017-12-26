@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IIsEvent | Botbuilder Slack</title>
+	<title>ISlackEnvelop | Botbuilder Slack</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="iisevent.html">IIsEvent</a>
+					<a href="islackenvelop.html">ISlackEnvelop</a>
 				</li>
 			</ul>
-			<h1>Interface IIsEvent</h1>
+			<h1>Interface ISlackEnvelop</h1>
 		</div>
 	</div>
 </header>
@@ -70,7 +70,18 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IIsEvent</span>
+						<span class="target">ISlackEnvelop</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="islackeventenvelope.html" class="tsd-signature-type">ISlackEventEnvelope</a>
+							</li>
+							<li>
+								<a href="islackcommandenvelope.html" class="tsd-signature-type">ISlackCommandEnvelope</a>
+							</li>
+							<li>
+								<a href="islackinteractivemessageenvelope.html" class="tsd-signature-type">ISlackInteractiveMessageEnvelope</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -79,32 +90,25 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Methods</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="iisevent.html#toevent" class="tsd-kind-icon">to<wbr>Event</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackenvelop.html#token" class="tsd-kind-icon">token</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="toevent" class="tsd-anchor"></a>
-					<h3>to<wbr>Event</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">to<wbr>Event<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IEvent</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/events/event.ts#L4">events/event.ts:4</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IEvent</span></h4>
-						</li>
-					</ul>
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="token" class="tsd-anchor"></a>
+					<h3>token</h3>
+					<div class="tsd-signature tsd-kind-icon">token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L24">interfaces.ts:24</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -121,10 +125,10 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="iisevent.html" class="tsd-kind-icon">IIs<wbr>Event</a>
+						<a href="islackenvelop.html" class="tsd-kind-icon">ISlack<wbr>Envelop</a>
 						<ul>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="iisevent.html#toevent" class="tsd-kind-icon">to<wbr>Event</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="islackenvelop.html#token" class="tsd-kind-icon">token</a>
 							</li>
 						</ul>
 					</li>

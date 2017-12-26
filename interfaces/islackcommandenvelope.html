@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ISlackConnectorSettings | Botbuilder Slack</title>
+	<title>ISlackCommandEnvelope | Botbuilder Slack</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="islackconnectorsettings.html">ISlackConnectorSettings</a>
+					<a href="islackcommandenvelope.html">ISlackCommandEnvelope</a>
 				</li>
 			</ul>
-			<h1>Interface ISlackConnectorSettings</h1>
+			<h1>Interface ISlackCommandEnvelope</h1>
 		</div>
 	</div>
 </header>
@@ -70,7 +70,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ISlackConnectorSettings</span>
+						<a href="islackenvelop.html" class="tsd-signature-type">ISlackEnvelop</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">ISlackCommandEnvelope</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -81,16 +86,18 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackconnectorsettings.html#botlookup" class="tsd-kind-icon">bot<wbr>Lookup</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackconnectorsettings.html#botname" class="tsd-kind-icon">bot<wbr>Name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackconnectorsettings.html#clientid" class="tsd-kind-icon">client<wbr>Id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackconnectorsettings.html#clientsecret" class="tsd-kind-icon">client<wbr>Secret</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackconnectorsettings.html#datacache" class="tsd-kind-icon">data<wbr>Cache</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackconnectorsettings.html#onoauthaccessdeniedredirecturl" class="tsd-kind-icon">onOAuth<wbr>Access<wbr>Denied<wbr>Redirect<wbr>Url</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackconnectorsettings.html#onoautherrorredirecturl" class="tsd-kind-icon">onOAuth<wbr>Error<wbr>Redirect<wbr>Url</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackconnectorsettings.html#onoauthsuccessredirecturl" class="tsd-kind-icon">onOAuth<wbr>Success<wbr>Redirect<wbr>Url</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackconnectorsettings.html#redirecturl" class="tsd-kind-icon">redirect<wbr>Url</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackconnectorsettings.html#verificationtoken" class="tsd-kind-icon">verification<wbr>Token</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackcommandenvelope.html#channel_id" class="tsd-kind-icon">channel_<wbr>id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackcommandenvelope.html#channel_name" class="tsd-kind-icon">channel_<wbr>name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackcommandenvelope.html#command" class="tsd-kind-icon">command</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackcommandenvelope.html#enterprise_id" class="tsd-kind-icon">enterprise_<wbr>id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackcommandenvelope.html#enterprise_name" class="tsd-kind-icon">enterprise_<wbr>name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackcommandenvelope.html#response_url" class="tsd-kind-icon">response_<wbr>url</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackcommandenvelope.html#team_domain" class="tsd-kind-icon">team_<wbr>domain</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackcommandenvelope.html#team_id" class="tsd-kind-icon">team_<wbr>id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackcommandenvelope.html#text" class="tsd-kind-icon">text</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="islackcommandenvelope.html#token" class="tsd-kind-icon">token</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackcommandenvelope.html#user_id" class="tsd-kind-icon">user_<wbr>id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackcommandenvelope.html#user_name" class="tsd-kind-icon">user_<wbr>name</a></li>
 							</ul>
 						</section>
 					</div>
@@ -99,123 +106,123 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="botlookup" class="tsd-anchor"></a>
-					<h3>bot<wbr>Lookup</h3>
-					<div class="tsd-signature tsd-kind-icon">bot<wbr>Lookup<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<a name="channel_id" class="tsd-anchor"></a>
+					<h3>channel_<wbr>id</h3>
+					<div class="tsd-signature tsd-kind-icon">channel_<wbr>id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/slack_connector.ts#L18">slack_connector.ts:18</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-siganture">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>teamId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>teamId: <span class="tsd-signature-type">string</span></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="botname" class="tsd-anchor"></a>
-					<h3>bot<wbr>Name</h3>
-					<div class="tsd-signature tsd-kind-icon">bot<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/slack_connector.ts#L19">slack_connector.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L54">interfaces.ts:54</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="clientid" class="tsd-anchor"></a>
-					<h3>client<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">client<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="channel_name" class="tsd-anchor"></a>
+					<h3>channel_<wbr>name</h3>
+					<div class="tsd-signature tsd-kind-icon">channel_<wbr>name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/slack_connector.ts#L21">slack_connector.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L55">interfaces.ts:55</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="clientsecret" class="tsd-anchor"></a>
-					<h3>client<wbr>Secret</h3>
-					<div class="tsd-signature tsd-kind-icon">client<wbr>Secret<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="command" class="tsd-anchor"></a>
+					<h3>command</h3>
+					<div class="tsd-signature tsd-kind-icon">command<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/slack_connector.ts#L22">slack_connector.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L58">interfaces.ts:58</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="datacache" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> data<wbr>Cache</h3>
-					<div class="tsd-signature tsd-kind-icon">data<wbr>Cache<span class="tsd-signature-symbol">:</span> <a href="islackdatacache.html" class="tsd-signature-type">ISlackDataCache</a></div>
+					<a name="enterprise_id" class="tsd-anchor"></a>
+					<h3>enterprise_<wbr>id</h3>
+					<div class="tsd-signature tsd-kind-icon">enterprise_<wbr>id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/slack_connector.ts#L27">slack_connector.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L52">interfaces.ts:52</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="onoauthaccessdeniedredirecturl" class="tsd-anchor"></a>
-					<h3>onOAuth<wbr>Access<wbr>Denied<wbr>Redirect<wbr>Url</h3>
-					<div class="tsd-signature tsd-kind-icon">onOAuth<wbr>Access<wbr>Denied<wbr>Redirect<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="enterprise_name" class="tsd-anchor"></a>
+					<h3>enterprise_<wbr>name</h3>
+					<div class="tsd-signature tsd-kind-icon">enterprise_<wbr>name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/slack_connector.ts#L26">slack_connector.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L53">interfaces.ts:53</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="onoautherrorredirecturl" class="tsd-anchor"></a>
-					<h3>onOAuth<wbr>Error<wbr>Redirect<wbr>Url</h3>
-					<div class="tsd-signature tsd-kind-icon">onOAuth<wbr>Error<wbr>Redirect<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="response_url" class="tsd-anchor"></a>
+					<h3>response_<wbr>url</h3>
+					<div class="tsd-signature tsd-kind-icon">response_<wbr>url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/slack_connector.ts#L25">slack_connector.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L60">interfaces.ts:60</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="onoauthsuccessredirecturl" class="tsd-anchor"></a>
-					<h3>onOAuth<wbr>Success<wbr>Redirect<wbr>Url</h3>
-					<div class="tsd-signature tsd-kind-icon">onOAuth<wbr>Success<wbr>Redirect<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="team_domain" class="tsd-anchor"></a>
+					<h3>team_<wbr>domain</h3>
+					<div class="tsd-signature tsd-kind-icon">team_<wbr>domain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/slack_connector.ts#L24">slack_connector.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L51">interfaces.ts:51</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="redirecturl" class="tsd-anchor"></a>
-					<h3>redirect<wbr>Url</h3>
-					<div class="tsd-signature tsd-kind-icon">redirect<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="team_id" class="tsd-anchor"></a>
+					<h3>team_<wbr>id</h3>
+					<div class="tsd-signature tsd-kind-icon">team_<wbr>id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/slack_connector.ts#L23">slack_connector.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L50">interfaces.ts:50</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="verificationtoken" class="tsd-anchor"></a>
-					<h3>verification<wbr>Token</h3>
-					<div class="tsd-signature tsd-kind-icon">verification<wbr>Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="text" class="tsd-anchor"></a>
+					<h3>text</h3>
+					<div class="tsd-signature tsd-kind-icon">text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/slack_connector.ts#L20">slack_connector.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L59">interfaces.ts:59</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="token" class="tsd-anchor"></a>
+					<h3>token</h3>
+					<div class="tsd-signature tsd-kind-icon">token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="islackenvelop.html">ISlackEnvelop</a>.<a href="islackenvelop.html#token">token</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L24">interfaces.ts:24</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="user_id" class="tsd-anchor"></a>
+					<h3>user_<wbr>id</h3>
+					<div class="tsd-signature tsd-kind-icon">user_<wbr>id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L56">interfaces.ts:56</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="user_name" class="tsd-anchor"></a>
+					<h3>user_<wbr>name</h3>
+					<div class="tsd-signature tsd-kind-icon">user_<wbr>name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L57">interfaces.ts:57</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -234,37 +241,43 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="islackconnectorsettings.html" class="tsd-kind-icon">ISlack<wbr>Connector<wbr>Settings</a>
+						<a href="islackcommandenvelope.html" class="tsd-kind-icon">ISlack<wbr>Command<wbr>Envelope</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="islackconnectorsettings.html#botlookup" class="tsd-kind-icon">bot<wbr>Lookup</a>
+								<a href="islackcommandenvelope.html#channel_id" class="tsd-kind-icon">channel_<wbr>id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="islackconnectorsettings.html#botname" class="tsd-kind-icon">bot<wbr>Name</a>
+								<a href="islackcommandenvelope.html#channel_name" class="tsd-kind-icon">channel_<wbr>name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="islackconnectorsettings.html#clientid" class="tsd-kind-icon">client<wbr>Id</a>
+								<a href="islackcommandenvelope.html#command" class="tsd-kind-icon">command</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="islackconnectorsettings.html#clientsecret" class="tsd-kind-icon">client<wbr>Secret</a>
+								<a href="islackcommandenvelope.html#enterprise_id" class="tsd-kind-icon">enterprise_<wbr>id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="islackconnectorsettings.html#datacache" class="tsd-kind-icon">data<wbr>Cache</a>
+								<a href="islackcommandenvelope.html#enterprise_name" class="tsd-kind-icon">enterprise_<wbr>name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="islackconnectorsettings.html#onoauthaccessdeniedredirecturl" class="tsd-kind-icon">onOAuth<wbr>Access<wbr>Denied<wbr>Redirect<wbr>Url</a>
+								<a href="islackcommandenvelope.html#response_url" class="tsd-kind-icon">response_<wbr>url</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="islackconnectorsettings.html#onoautherrorredirecturl" class="tsd-kind-icon">onOAuth<wbr>Error<wbr>Redirect<wbr>Url</a>
+								<a href="islackcommandenvelope.html#team_domain" class="tsd-kind-icon">team_<wbr>domain</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="islackconnectorsettings.html#onoauthsuccessredirecturl" class="tsd-kind-icon">onOAuth<wbr>Success<wbr>Redirect<wbr>Url</a>
+								<a href="islackcommandenvelope.html#team_id" class="tsd-kind-icon">team_<wbr>id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="islackconnectorsettings.html#redirecturl" class="tsd-kind-icon">redirect<wbr>Url</a>
+								<a href="islackcommandenvelope.html#text" class="tsd-kind-icon">text</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="islackcommandenvelope.html#token" class="tsd-kind-icon">token</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="islackconnectorsettings.html#verificationtoken" class="tsd-kind-icon">verification<wbr>Token</a>
+								<a href="islackcommandenvelope.html#user_id" class="tsd-kind-icon">user_<wbr>id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="islackcommandenvelope.html#user_name" class="tsd-kind-icon">user_<wbr>name</a>
 							</li>
 						</ul>
 					</li>

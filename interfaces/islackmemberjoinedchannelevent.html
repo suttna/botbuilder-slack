@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IIsEvent | Botbuilder Slack</title>
+	<title>ISlackMemberJoinedChannelEvent | Botbuilder Slack</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="iisevent.html">IIsEvent</a>
+					<a href="islackmemberjoinedchannelevent.html">ISlackMemberJoinedChannelEvent</a>
 				</li>
 			</ul>
-			<h1>Interface IIsEvent</h1>
+			<h1>Interface ISlackMemberJoinedChannelEvent</h1>
 		</div>
 	</div>
 </header>
@@ -70,7 +70,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IIsEvent</span>
+						<a href="islackevent.html" class="tsd-signature-type">ISlackEvent</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">ISlackMemberJoinedChannelEvent</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -79,32 +84,84 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Methods</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="iisevent.html#toevent" class="tsd-kind-icon">to<wbr>Event</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite"><a href="islackmemberjoinedchannelevent.html#channel" class="tsd-kind-icon">channel</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackmemberjoinedchannelevent.html#channel_type" class="tsd-kind-icon">channel_<wbr>type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="islackmemberjoinedchannelevent.html#event_ts" class="tsd-kind-icon">event_<wbr>ts</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="islackmemberjoinedchannelevent.html#inviter" class="tsd-kind-icon">inviter</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite"><a href="islackmemberjoinedchannelevent.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite"><a href="islackmemberjoinedchannelevent.html#user" class="tsd-kind-icon">user</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="toevent" class="tsd-anchor"></a>
-					<h3>to<wbr>Event</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">to<wbr>Event<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IEvent</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/events/event.ts#L4">events/event.ts:4</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IEvent</span></h4>
-						</li>
-					</ul>
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
+					<a name="channel" class="tsd-anchor"></a>
+					<h3>channel</h3>
+					<div class="tsd-signature tsd-kind-icon">channel<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Overrides <a href="islackevent.html">ISlackEvent</a>.<a href="islackevent.html#channel">channel</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L81">interfaces.ts:81</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="channel_type" class="tsd-anchor"></a>
+					<h3>channel_<wbr>type</h3>
+					<div class="tsd-signature tsd-kind-icon">channel_<wbr>type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L82">interfaces.ts:82</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="event_ts" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> event_<wbr>ts</h3>
+					<div class="tsd-signature tsd-kind-icon">event_<wbr>ts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="islackevent.html">ISlackEvent</a>.<a href="islackevent.html#event_ts">event_ts</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L65">interfaces.ts:65</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="inviter" class="tsd-anchor"></a>
+					<h3>inviter</h3>
+					<div class="tsd-signature tsd-kind-icon">inviter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L83">interfaces.ts:83</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
+					<a name="type" class="tsd-anchor"></a>
+					<h3>type</h3>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"member_joined_channel"</span></div>
+					<aside class="tsd-sources">
+						<p>Overrides <a href="islackevent.html">ISlackEvent</a>.<a href="islackevent.html#type">type</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L79">interfaces.ts:79</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
+					<a name="user" class="tsd-anchor"></a>
+					<h3>user</h3>
+					<div class="tsd-signature tsd-kind-icon">user<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Overrides <a href="islackevent.html">ISlackEvent</a>.<a href="islackevent.html#user">user</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/suttna/botbuilder-slack/blob/5239776/src/interfaces.ts#L80">interfaces.ts:80</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -121,10 +178,25 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="iisevent.html" class="tsd-kind-icon">IIs<wbr>Event</a>
+						<a href="islackmemberjoinedchannelevent.html" class="tsd-kind-icon">ISlack<wbr>Member<wbr>Joined<wbr>Channel<wbr>Event</a>
 						<ul>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="iisevent.html#toevent" class="tsd-kind-icon">to<wbr>Event</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
+								<a href="islackmemberjoinedchannelevent.html#channel" class="tsd-kind-icon">channel</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="islackmemberjoinedchannelevent.html#channel_type" class="tsd-kind-icon">channel_<wbr>type</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="islackmemberjoinedchannelevent.html#event_ts" class="tsd-kind-icon">event_<wbr>ts</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="islackmemberjoinedchannelevent.html#inviter" class="tsd-kind-icon">inviter</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
+								<a href="islackmemberjoinedchannelevent.html#type" class="tsd-kind-icon">type</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
+								<a href="islackmemberjoinedchannelevent.html#user" class="tsd-kind-icon">user</a>
 							</li>
 						</ul>
 					</li>
