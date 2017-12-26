@@ -20,8 +20,13 @@ export interface ISlackUser {
   name: string
 }
 
-export interface ISlackEnvelop {
+export interface ISlackEnvelope {
   token: string
+}
+
+export interface ISlackOAuthEnvelope {
+  error?: string
+  code?: string
 }
 
 export interface ISlackConversationIdentifier {
@@ -35,7 +40,7 @@ export interface ISlackUserIdentifier {
   team: string
 }
 
-export interface ISlackEventEnvelope extends ISlackEnvelop {
+export interface ISlackEventEnvelope extends ISlackEnvelope {
   team_id?: string
   api_app_id?: string
   event?: ISlackEvent
@@ -46,7 +51,7 @@ export interface ISlackEventEnvelope extends ISlackEnvelop {
   challenge?: string
 }
 
-export interface ISlackCommandEnvelope extends ISlackEnvelop {
+export interface ISlackCommandEnvelope extends ISlackEnvelope {
   team_id: string
   team_domain: string
   enterprise_id: string
@@ -101,7 +106,7 @@ export interface ISlackMessageAction {
   value: string
 }
 
-export interface ISlackInteractiveMessageEnvelope extends ISlackEnvelop {
+export interface ISlackInteractiveMessageEnvelope extends ISlackEnvelope {
   actions: ISlackMessageAction[]
   callback_id: "botbuilder"
   action_ts: string

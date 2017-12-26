@@ -3,20 +3,13 @@ import { IEvent } from "botbuilder"
 import { Address } from "../address"
 import { OAuthAccessDeniedError } from "../errors"
 import { InstallationUpdateEvent } from "../events/installation_update"
-import { ISlackConnectorSettings } from "../slack_connector"
-import { IInteractorResult } from "./"
+import { ISlackOAuthEnvelope } from "../interfaces"
+import { BaseInteractor, IInteractorResult } from "./base_interactor"
 
-export interface IOAuthOptions {
-  error?: string
-  code?: string
-}
-
-export class OAuthInteractor {
-
-  constructor(private settings: ISlackConnectorSettings, private options: IOAuthOptions) { }
+export class OAuthInteractor extends BaseInteractor<ISlackOAuthEnvelope> {
 
   public async call(): Promise<IInteractorResult> {
-    if (this.options.error === "access_denied") {
+    if (this.envelope.error === "access_denied") {
       throw new OAuthAccessDeniedError()
     }
 
@@ -25,7 +18,7 @@ export class OAuthInteractor {
     const result = await client.oauth.access(
       this.settings.clientId,
       this.settings.clientSecret,
-      this.options.code,
+      this.envelope.code,
       { redirect_uri: this.settings.redirectUrl },
     )
 

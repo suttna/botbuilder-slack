@@ -2,14 +2,10 @@ import { Message } from "botbuilder"
 import { Address } from "../address"
 import { UnauthorizedError } from "../errors"
 import { ISlackInteractiveMessageEnvelope } from "../interfaces"
-import { ISlackConnectorSettings } from "../slack_connector"
 import * as utils from "../utils"
-import { IInteractorResult } from "./"
+import { BaseInteractor, IInteractorResult } from "./base_interactor"
 
-export class InteractiveMessageInteractor {
-
-  constructor(private settings: ISlackConnectorSettings, private envelope: ISlackInteractiveMessageEnvelope) { }
-
+export class InteractiveMessageInteractor extends BaseInteractor<ISlackInteractiveMessageEnvelope> {
   public async call(): Promise<IInteractorResult> {
     if (!utils.isValidEnvelope(this.envelope, this.settings.verificationToken)) {
       throw new UnauthorizedError()
@@ -18,9 +14,10 @@ export class InteractiveMessageInteractor {
     const [token, botIdentifier] = await this.settings.botLookup(this.envelope.team.id)
 
     const botIdentity = utils.decomposeUserId(botIdentifier)
+    const userIdentity = await this.buildUser(botIdentifier, this.envelope.user.id)
 
     const address = new Address(botIdentity.team)
-      .user(this.envelope.user.id)
+      .user(this.envelope.user.id, userIdentity.name)
       .channel(this.envelope.channel.id)
       .bot(botIdentity.user, this.settings.botName)
       .id(this.envelope.message_ts)

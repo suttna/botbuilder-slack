@@ -44,7 +44,7 @@ export function expectedMessage(event: ISlackMessageEvent, mentions: IIdentity[]
 export function expectedCommandEvent(envelope: ISlackCommandEnvelope): IEvent {
   const address = new Address("TXXX")
     .bot("BXXX", "test_bot")
-    .user(envelope.user_id)
+    .user(envelope.user_id, "User X")
     .channel(envelope.channel_id)
 
   return new CommandEvent()
@@ -101,7 +101,7 @@ export function expectedConversationUpdateEvent(event: ISlackEvent, isBotTheUser
 export function expectedInteractiveMessage(action: any): IMessage {
   const address = new Address(defaultInteractiveMessageEnvelope.team.id)
     .bot("BXXX", "test_bot")
-    .user(defaultInteractiveMessageEnvelope.user.id)
+    .user(defaultInteractiveMessageEnvelope.user.id, "User X")
     .channel(defaultInteractiveMessageEnvelope.channel.id)
     .id(defaultInteractiveMessageEnvelope.message_ts)
 

@@ -1,7 +1,7 @@
 import { ChatPostMessageParams, MessageAttachment } from "@slack/client"
 import { IIdentity, IMessage } from "botbuilder"
 import {
-  IMention, ISlackConversationIdentifier, ISlackDataCache, ISlackEnvelop, ISlackUser, ISlackUserIdentifier,
+  IMention, ISlackConversationIdentifier, ISlackDataCache, ISlackEnvelope, ISlackUser, ISlackUserIdentifier,
 } from "./interfaces"
 
 export interface IMentionRequest {
@@ -12,7 +12,7 @@ export interface IMentionRequest {
   dataCache?: ISlackDataCache
 }
 
-export function isValidEnvelope(envelope: ISlackEnvelop, verificationToken: string): boolean {
+export function isValidEnvelope(envelope: ISlackEnvelope, verificationToken: string): boolean {
   return envelope.token === verificationToken
 }
 
