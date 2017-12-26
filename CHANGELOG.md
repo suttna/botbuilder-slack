@@ -1,5 +1,15 @@
 # Change Log
 
+## [v1.1.0](https://github.com/suttna/botbuilder-slack/tree/v1.1.0) (2017-12-26)
+[Full Changelog](https://github.com/suttna/botbuilder-slack/compare/v1.0.1-1...v1.1.0)
+
+**Merged pull requests:**
+
+- Add version hooks [\#26](https://github.com/suttna/botbuilder-slack/pull/26) ([bilby91](https://github.com/bilby91))
+- Add automatic releases on VX.Z.Y tags [\#25](https://github.com/suttna/botbuilder-slack/pull/25) ([bilby91](https://github.com/bilby91))
+- Make interfaces.ts a module instead of a script [\#24](https://github.com/suttna/botbuilder-slack/pull/24) ([bilby91](https://github.com/bilby91))
+- Add ISlackDataCache for mention names [\#23](https://github.com/suttna/botbuilder-slack/pull/23) ([bilby91](https://github.com/bilby91))
+
 ## [v1.0.1-1](https://github.com/suttna/botbuilder-slack/tree/v1.0.1-1) (2017-11-20)
 [Full Changelog](https://github.com/suttna/botbuilder-slack/compare/v1.0.1-0...v1.0.1-1)
 
