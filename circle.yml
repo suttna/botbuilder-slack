@@ -17,7 +17,11 @@ test:
     - yarn ci
 
 deployment:
-  next:
+  docs:
     branch: master
     commands:
       - scripts/docs.sh
+  npm:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    commands:
+      - scripts/publish.sh
