@@ -7,6 +7,7 @@ import * as qs from "qs"
 import { OAuthAccessDeniedError, UnauthorizedError } from "./errors"
 import * as http from "./http"
 import * as interactors from "./interactors"
+import { ISlackDataCache, ISlackInteractiveMessageEnvelope } from "./interfaces"
 import * as utils from "./utils"
 
 export interface ISlackAddress extends IAddress {

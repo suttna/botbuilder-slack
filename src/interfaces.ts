@@ -1,8 +1,8 @@
-type EventEnvelopeType = "url_verification" | "event_callback"
+export type EventEnvelopeType = "url_verification" | "event_callback"
 
-type Nullable<T> = { [P in keyof T]: T[P] | null }
+export type Nullable<T> = { [P in keyof T]: T[P] | null }
 
-interface IMention {
+export interface IMention {
   type: "mention"
   mentioned: {
     id: string
@@ -11,31 +11,31 @@ interface IMention {
   text: string
 }
 
-interface ISlackDataCache {
+export interface ISlackDataCache {
   findUsers: (userIds: string[]) => Promise<ISlackUser[]>
 }
 
-interface ISlackUser {
+export interface ISlackUser {
   id: string
   name: string
 }
 
-interface ISlackEnvelop {
+export interface ISlackEnvelop {
   token: string
 }
 
-interface ISlackConversationIdentifier {
+export interface ISlackConversationIdentifier {
   bot: string
   channel: string
   team: string
 }
 
-interface ISlackUserIdentifier {
+export interface ISlackUserIdentifier {
   user: string
   team: string
 }
 
-interface ISlackEventEnvelope extends ISlackEnvelop {
+export interface ISlackEventEnvelope extends ISlackEnvelop {
   team_id?: string
   api_app_id?: string
   event?: ISlackEvent
@@ -46,7 +46,7 @@ interface ISlackEventEnvelope extends ISlackEnvelop {
   challenge?: string
 }
 
-interface ISlackCommandEnvelope extends ISlackEnvelop {
+export interface ISlackCommandEnvelope extends ISlackEnvelop {
   team_id: string
   team_domain: string
   enterprise_id: string
@@ -60,14 +60,14 @@ interface ISlackCommandEnvelope extends ISlackEnvelop {
   response_url: string
 }
 
-interface ISlackEvent {
+export interface ISlackEvent {
   type: string
   event_ts?: string
   user?: string
   channel?: string | any
 }
 
-interface ISlackMessageEvent extends ISlackEvent {
+export interface ISlackMessageEvent extends ISlackEvent {
   type: "message",
   text: string
   ts: string
@@ -75,7 +75,7 @@ interface ISlackMessageEvent extends ISlackEvent {
   subtype?: "bot_message"
 }
 
-interface ISlackMemberJoinedChannelEvent extends ISlackEvent {
+export interface ISlackMemberJoinedChannelEvent extends ISlackEvent {
   type: "member_joined_channel",
   user: string
   channel: string
@@ -83,11 +83,11 @@ interface ISlackMemberJoinedChannelEvent extends ISlackEvent {
   inviter: string
 }
 
-interface ISlackAppUninstalledEvent extends ISlackEvent {
+export interface ISlackAppUninstalledEvent extends ISlackEvent {
   type: "app_uninstalled"
 }
 
-interface ISlackMemberLeftChannelEvent extends ISlackEvent {
+export interface ISlackMemberLeftChannelEvent extends ISlackEvent {
   type: "member_left_channel",
   user: string
   channel: string
@@ -95,13 +95,13 @@ interface ISlackMemberLeftChannelEvent extends ISlackEvent {
   inviter: string
 }
 
-interface ISlackMessageAction {
+export interface ISlackMessageAction {
   type: string
   text: string
   value: string
 }
 
-interface ISlackInteractiveMessageEnvelope extends ISlackEnvelop {
+export interface ISlackInteractiveMessageEnvelope extends ISlackEnvelop {
   actions: ISlackMessageAction[]
   callback_id: "botbuilder"
   action_ts: string

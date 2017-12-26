@@ -1,6 +1,7 @@
 import { Message } from "botbuilder"
 import { Address } from "../address"
 import { UnauthorizedError } from "../errors"
+import { ISlackInteractiveMessageEnvelope } from "../interfaces"
 import { ISlackConnectorSettings } from "../slack_connector"
 import * as utils from "../utils"
 import { IInteractorResult } from "./"
@@ -36,7 +37,7 @@ export class InteractiveMessageInteractor {
     return { events: [message] }
   }
 
-  public buildInteractiveMessageSourceEvent(token: string) {
+  private buildInteractiveMessageSourceEvent(token: string) {
     return {
       slack: {
         Payload: {

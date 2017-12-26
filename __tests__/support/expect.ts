@@ -2,6 +2,7 @@ import { IEvent, IIdentity, IMessage, Message } from "botbuilder"
 import "jest"
 import { Address } from "../../src/address"
 import { CommandEvent, ConversationUpdateEvent, InstallationUpdateEvent } from "../../src/events"
+import { ISlackCommandEnvelope, ISlackEvent, ISlackMessageEvent } from "../../src/interfaces"
 import { defaultInteractiveMessageEnvelope, defaultMessageEnvelope } from "./defaults"
 
 export function expectedMessage(event: ISlackMessageEvent, mentions: IIdentity[] = []): IMessage {

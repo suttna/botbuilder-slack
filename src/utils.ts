@@ -1,5 +1,8 @@
 import { ChatPostMessageParams, MessageAttachment } from "@slack/client"
 import { IIdentity, IMessage } from "botbuilder"
+import {
+  IMention, ISlackConversationIdentifier, ISlackDataCache, ISlackEnvelop, ISlackUser, ISlackUserIdentifier,
+} from "./interfaces"
 
 export interface IMentionRequest {
   text: string

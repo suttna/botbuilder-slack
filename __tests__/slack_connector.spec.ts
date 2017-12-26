@@ -15,6 +15,9 @@ import {
   expectedMessage,
 } from "./support/expect"
 
+import {
+  ISlackCommandEnvelope, ISlackEvent, ISlackInteractiveMessageEnvelope, ISlackMessageEvent,
+} from "../src/interfaces"
 import { ISlackAddress, SlackConnector } from "../src/slack_connector"
 
 // Useful for debugging slack api calls

@@ -1,6 +1,5 @@
 import { AuthAccessResult, WebClient } from "@slack/client"
 import { IEvent } from "botbuilder"
-
 import { Address } from "../address"
 import { OAuthAccessDeniedError } from "../errors"
 import { InstallationUpdateEvent } from "../events/installation_update"
