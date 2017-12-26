@@ -18,7 +18,9 @@
     "lint": "tslint 'src/**/*.ts' '__tests__/**/*.ts'",
     "lint:fix": "tslint 'src/**/*.ts' '__tests__/**/*.ts' --fix",
     "ci": "yarn lint && yarn build:src && yarn build:tests && yarn test",
-    "prepare": "yarn build"
+    "prepare": "yarn build",
+    "preversion": "yarn test",
+    "changelog": "bundle exec github_changelog_generator"
   },
   "keywords": [
     "bot",
