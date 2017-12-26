@@ -1,4 +1,4 @@
-import { IEvent, IIdentity, Message } from "botbuilder"
+import { IEvent, Message } from "botbuilder"
 import { Address } from "../address"
 import * as constants from "../constants"
 import { UnauthorizedError } from "../errors"
@@ -6,14 +6,10 @@ import { ConversationUpdateEvent, InstallationUpdateEvent } from "../events"
 import {
   ISlackEvent, ISlackEventEnvelope, ISlackMemberJoinedChannelEvent, ISlackMemberLeftChannelEvent, ISlackMessageEvent,
 } from "../interfaces"
-import { ISlackConnectorSettings } from "../slack_connector"
 import * as utils from "../utils"
-import { IInteractorResult } from "./"
+import { BaseInteractor, IInteractorResult } from "./base_interactor"
 
-export class EventInteractor {
-
-  constructor(private settings: ISlackConnectorSettings, private envelope: ISlackEventEnvelope) { }
-
+export class EventInteractor extends BaseInteractor<ISlackEventEnvelope> {
   private get event(): ISlackEvent {
     return this.envelope.event as ISlackEvent
   }
@@ -160,23 +156,6 @@ export class EventInteractor {
     return matches.reduce((x) => {
       return text.replace(pattern, botMention)
     }, text)
-  }
-
-  private async buildUser(botbuilderBotId: string, userId: string): Promise<IIdentity> {
-    if (!this.settings.dataCache) {
-      return null
-    }
-
-    const botId        = utils.decomposeUserId(botbuilderBotId)
-    const userIdentity = utils.buildUserIdentity(userId, botId.team)
-
-    const [cachedUser] = await this.settings.dataCache.findUsers([userIdentity.id])
-
-    if (cachedUser) {
-      userIdentity.name = cachedUser.name
-    }
-
-    return userIdentity
   }
 
   private buildMessageSourceEvent(token: string) {

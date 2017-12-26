@@ -3,29 +3,27 @@ import { Address } from "../address"
 import { UnauthorizedError } from "../errors"
 import { CommandEvent } from "../events"
 import { ISlackCommandEnvelope } from "../interfaces"
-import { ISlackConnectorSettings } from "../slack_connector"
 import * as utils from "../utils"
-import { IInteractorResult } from "./"
+import { BaseInteractor, IInteractorResult } from "./base_interactor"
 
-export class CommandInteractor {
-
-  constructor(private settings: ISlackConnectorSettings, private envelope: ISlackCommandEnvelope) { }
-
+export class CommandInteractor extends BaseInteractor<ISlackCommandEnvelope> {
   public async call(): Promise<IInteractorResult> {
     if (!utils.isValidEnvelope(this.envelope, this.settings.verificationToken)) {
       throw new UnauthorizedError()
     }
 
     const [token, botIdentifier] = await this.settings.botLookup(this.envelope.team_id)
-    const event = this.buildCommandEvent(token, botIdentifier)
+    const event = await this.buildCommandEvent(token, botIdentifier)
 
     return { events: [event] }
   }
 
-  private buildCommandEvent(token: string, botIdentifier: string): IEvent {
+  private async buildCommandEvent(token: string, botIdentifier: string): Promise<IEvent> {
     const botIdentity = utils.decomposeUserId(botIdentifier)
+    const userIdentity = await this.buildUser(botIdentifier, this.envelope.user_id)
+
     const address = new Address(botIdentity.team)
-      .user(this.envelope.user_id)
+      .user(this.envelope.user_id, userIdentity.name)
       .bot(botIdentity.user, this.settings.botName)
       .channel(this.envelope.channel_id)
 
