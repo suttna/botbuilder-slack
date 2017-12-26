@@ -3,6 +3,9 @@ import { Address } from "../address"
 import * as constants from "../constants"
 import { UnauthorizedError } from "../errors"
 import { ConversationUpdateEvent, InstallationUpdateEvent } from "../events"
+import {
+  ISlackEvent, ISlackEventEnvelope, ISlackMemberJoinedChannelEvent, ISlackMemberLeftChannelEvent, ISlackMessageEvent,
+} from "../interfaces"
 import { ISlackConnectorSettings } from "../slack_connector"
 import * as utils from "../utils"
 import { IInteractorResult } from "./"
