@@ -22,7 +22,7 @@
     "botbuilder": "^3.9.1",
     "botbuilder-slack": "file:../",
     "express": "^4.16.1",
-    "restify": "^5.0.0"
+    "restify": "^6.0.0"
   },
   "devDependencies": {
     "@types/body-parser": "1.16.8",
