@@ -30,7 +30,6 @@ describe("SlackConnector", () => {
   let onDispatchEvents: (events: IEvent[], cb?: (err: Error) => void) => void
 
   let onDispatchMock: jest.Mock<void>
-  let endMock: jest.Mock<void>
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -50,8 +49,6 @@ describe("SlackConnector", () => {
     })
 
     onDispatchMock = jest.fn<any>()
-    endMock = jest.fn()
-
     onDispatchEvents = onDispatchMock
 
     connector.onEvent(onDispatchEvents)

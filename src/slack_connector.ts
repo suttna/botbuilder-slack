@@ -29,6 +29,7 @@ export interface ISlackConnectorSettings {
 
 export class SlackConnector implements IConnector {
   private onEventHandler: (events: IEvent[], cb?: (err: Error) => void) => void
+  // @ts-ignore
   private onInvokeHandler: (event: IEvent, cb?: (err: Error, body: any, status?: number) => void) => void
   private onDispatchEvents: (events: IEvent[], cb?: (events: IEvent[]) => void) => void
 
