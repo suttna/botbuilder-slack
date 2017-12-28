@@ -35,18 +35,18 @@
     "botbuilder": "^3.9.1"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.11",
-    "@types/jest": "^20.0.8",
-    "@types/nock": "^8.2.1",
-    "@types/node": "^8.0.28",
-    "@types/qs": "^6.5.0",
-    "@types/ws": "^3.0.2",
-    "codecov": "^2.3.0",
-    "jest": "^21.1.0",
-    "nock": "^9.0.14",
-    "ts-jest": "^21.0.1",
-    "tslint": "^5.7.0",
-    "typedoc": "^0.8.0",
+    "@types/bluebird": "3.5.19",
+    "@types/jest": "20.0.8",
+    "@types/nock": "8.2.1",
+    "@types/node": "8.5.2",
+    "@types/qs": "6.5.1",
+    "@types/ws": "3.2.1",
+    "codecov": "2.3.1",
+    "jest": "21.2.1",
+    "nock": "9.1.5",
+    "ts-jest": "21.2.4",
+    "tslint": "5.8.0",
+    "typedoc": "0.8.0",
     "typescript": "2.6.2"
   }
 }
