@@ -46,7 +46,7 @@
     "nock": "9.1.5",
     "ts-jest": "21.2.4",
     "tslint": "5.8.0",
-    "typedoc": "0.8.0",
+    "typedoc": "0.9.0",
     "typescript": "2.6.2"
   }
 }
