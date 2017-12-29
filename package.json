@@ -44,7 +44,7 @@
     "codecov": "3.0.0",
     "jest": "21.2.1",
     "nock": "9.1.5",
-    "ts-jest": "21.2.4",
+    "ts-jest": "22.0.0",
     "tslint": "5.8.0",
     "typedoc": "0.9.0",
     "typescript": "2.6.2"
