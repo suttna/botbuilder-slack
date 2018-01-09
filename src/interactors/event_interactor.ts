@@ -56,10 +56,11 @@ export class EventInteractor extends BaseInteractor<ISlackEventEnvelope> {
     const botIdentity  = utils.decomposeUserId(botId)
     const userIdentity = await this.buildUser(botId, this.event.user)
 
-    const address = new Address(botIdentity.team)
+    const address = new Address(botIdentity.teamId)
       .user(this.event.user, userIdentity.name)
-      .bot(botIdentity.user, this.settings.botName)
+      .bot(botIdentity.userId, this.settings.botName)
       .channel(this.event.channel)
+      .thread(this.event.thread_ts)
       .id(this.event.event_ts)
 
     const messageEvent = this.event as ISlackMessageEvent
@@ -85,9 +86,9 @@ export class EventInteractor extends BaseInteractor<ISlackEventEnvelope> {
   private async buildInstallationUpdateEvent(botId: string, token: string): Promise<IEvent> {
     const botIdentity = utils.decomposeUserId(botId)
 
-    const address = new Address(botIdentity.team)
-      .user(botIdentity.user, this.settings.botName)
-      .bot(botIdentity.user, this.settings.botName)
+    const address = new Address(botIdentity.teamId)
+      .user(botIdentity.userId, this.settings.botName)
+      .bot(botIdentity.userId, this.settings.botName)
 
     return new InstallationUpdateEvent()
       .address(address.toAddress())
@@ -104,8 +105,8 @@ export class EventInteractor extends BaseInteractor<ISlackEventEnvelope> {
   private async buildConversationUpdateEvent(botId: string, token: string): Promise<IEvent> {
     const botIdentity = utils.decomposeUserId(botId)
 
-    const address = new Address(botIdentity.team)
-      .bot(botIdentity.user, this.settings.botName)
+    const address = new Address(botIdentity.teamId)
+      .bot(botIdentity.userId, this.settings.botName)
       .channel(this.envelope.event.channel.id || this.envelope.event.channel)
 
     const event = new ConversationUpdateEvent()
@@ -138,7 +139,7 @@ export class EventInteractor extends BaseInteractor<ISlackEventEnvelope> {
         break
       }
       default: {
-        address.user(botIdentity.user, this.settings.botName)
+        address.user(botIdentity.userId, this.settings.botName)
       }
     }
 

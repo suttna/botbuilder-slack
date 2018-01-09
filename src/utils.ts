@@ -1,7 +1,13 @@
 import { ChatPostMessageParams, MessageAttachment } from "@slack/client"
 import { IIdentity, IMessage } from "botbuilder"
 import {
-  IMention, ISlackConversationIdentifier, ISlackDataCache, ISlackEnvelope, ISlackUser, ISlackUserIdentifier,
+  IMention,
+  ISlackBotIdentifier,
+  ISlackConversationIdentifier,
+  ISlackDataCache,
+  ISlackEnvelope,
+  ISlackUser,
+  ISlackUserIdentifier,
 } from "./interfaces"
 
 export interface IMentionRequest {
@@ -17,21 +23,32 @@ export function isValidEnvelope(envelope: ISlackEnvelope, verificationToken: str
 }
 
 export function decomposeConversationId(conversationId: string): ISlackConversationIdentifier {
-  const [botId, teamId, slackConversationId] = conversationId.split(":")
+  const [botId, teamId, channelAndMessage] = conversationId.split(":")
+  const [channelId, messageId] = channelAndMessage.split(";messageid=")
 
   return {
-    bot: botId,
-    team: teamId,
-    channel: slackConversationId,
+    botId,
+    teamId,
+    channelId,
+    messageId,
   }
 }
 
-export function decomposeUserId(userId: string): ISlackUserIdentifier {
-  const [user, team] = userId.split(":")
+export function decomposeBotId(identifier: string): ISlackBotIdentifier {
+  const [botId, teamId] = identifier.split(":")
 
   return {
-    user,
-    team,
+    botId,
+    teamId,
+  }
+}
+
+export function decomposeUserId(identifier: string): ISlackUserIdentifier {
+  const [userId, teamId] = identifier.split(":")
+
+  return {
+    userId,
+    teamId,
   }
 }
 
@@ -83,17 +100,17 @@ function enrichMention(mention: IMention, users: ISlackUser[]): IMention {
   return mention
 }
 
-export function buildSlackMessage(channel: string, message: IMessage): ChatPostMessageParams {
+export function buildSlackMessage(message: IMessage): ChatPostMessageParams {
+  const { channelId, messageId } = decomposeConversationId(message.address.conversation.id)
+
   let attachments: MessageAttachment[] = []
 
   if (message.text) {
-    attachments.push(
-      {
-        fallback: message.text,
-        pretext: message.text,
-        mrkdwn_in: ["pretext"],
-      },
-    )
+    attachments.push({
+      fallback: message.text,
+      pretext: message.text,
+      mrkdwn_in: ["pretext"],
+    })
   }
 
   if (message.attachments) {
@@ -120,7 +137,8 @@ export function buildSlackMessage(channel: string, message: IMessage): ChatPostM
   }
 
   return {
-    channel,
+    channel: channelId,
+    thread_ts: messageId,
     attachments,
   }
 }
@@ -131,11 +149,12 @@ export function buildUserIdentity(slackUserId: string, teamId: string): IIdentit
   }
 }
 
-export function buildConversationIdentity(slackChannelId: string, botId: string): IIdentity {
-  return {
-    id: `${botId}:${slackChannelId}`,
-    isGroup: isGroupConversation(slackChannelId),
+export function buildConversationIdentity(botId: string, teamId: string, channelId: string, messageId?: string) {
+  if (messageId && isGroupConversation(channelId)) {
+    channelId += `;messageid=${messageId}`
   }
+
+  return { id: `${botId}:${teamId}:${channelId}`, isGroup: isGroupConversation(channelId) }
 }
 
 export function isGroupConversation(slackChannelId: string): boolean {

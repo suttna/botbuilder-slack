@@ -6,6 +6,8 @@ Slack connector for Microsoft BotBuilder.
 
 This connector was created at [Suttna](https://suttna.com) to tackle some of the limitations of BotFramework's current Slack connector.
 
+‼️‼️**For FULL BotFramework's connector compatibility use botbuilder-slack@1.1.1**‼️‼️
+
 ## Features
 
 ### OAuth
@@ -100,6 +102,18 @@ You need to setup a URL that will listen for interactive message callbacks. Look
 ### Commands
 
 You need to setup a URL that will listen for commands. Look at the usage example to have a better understanding.
+
+### Threads
+
+By default, replies to user's messages are threaded. This means that if you want to have an unthreaded conversation with a user you will need to manually change the address. This mimics what Microsoft Teams does. A conversation id will look like this `BXXX:TXXX:CXXX;messageid=123456`.
+
+```javascript
+bot.dialog("/", (session) => {
+  session.message.address.conversation.id = session.message.address.conversation.id.split(";")[0]
+
+  session.endDialog("Am I in a thread?") // No, this created a separate message
+})
+```
 
 ### Data Cache
 

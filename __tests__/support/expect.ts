@@ -3,13 +3,14 @@ import "jest"
 import { Address } from "../../src/address"
 import { CommandEvent, ConversationUpdateEvent, InstallationUpdateEvent } from "../../src/events"
 import { ISlackCommandEnvelope, ISlackEvent, ISlackMessageEvent } from "../../src/interfaces"
-import { defaultInteractiveMessageEnvelope, defaultMessageEnvelope } from "./defaults"
+import { defaultMessageEnvelope } from "./defaults"
 
 export function expectedMessage(event: ISlackMessageEvent, mentions: IIdentity[] = []): IMessage {
   const address = new Address(defaultMessageEnvelope.team_id)
     .bot("BXXX", "test_bot")
     .user(event.user, "User X")
     .channel(event.channel)
+    .thread(event.thread_ts)
     .id(event.event_ts)
 
   const entities = mentions.map((x) => {
@@ -98,22 +99,22 @@ export function expectedConversationUpdateEvent(event: ISlackEvent, isBotTheUser
   return e.toEvent()
 }
 
-export function expectedInteractiveMessage(action: any): IMessage {
-  const address = new Address(defaultInteractiveMessageEnvelope.team.id)
+export function expectedInteractiveMessage(envelope: any): IMessage {
+  const address = new Address(envelope.team.id)
     .bot("BXXX", "test_bot")
-    .user(defaultInteractiveMessageEnvelope.user.id, "User X")
-    .channel(defaultInteractiveMessageEnvelope.channel.id)
-    .id(defaultInteractiveMessageEnvelope.message_ts)
+    .user(envelope.user.id, "User X")
+    .channel(envelope.channel.id)
+    .thread(envelope.original_message.thread_ts)
+    .id(envelope.message_ts)
 
   return new Message()
-    .text(action.value)
+    .text(envelope.actions[0].value)
     .address(address.toAddress())
-    .timestamp(defaultInteractiveMessageEnvelope.action_ts)
+    .timestamp(envelope.action_ts)
     .sourceEvent({
       slack: {
         Payload: {
-          ...defaultInteractiveMessageEnvelope,
-          actions: [action],
+          ...envelope,
         },
         ApiToken: "XXX",
       },

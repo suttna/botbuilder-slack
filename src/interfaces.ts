@@ -30,14 +30,20 @@ export interface ISlackOAuthEnvelope {
 }
 
 export interface ISlackConversationIdentifier {
-  bot: string
-  channel: string
-  team: string
+  botId: string
+  channelId: string
+  teamId: string
+  messageId?: string
+}
+
+export interface ISlackBotIdentifier {
+  botId: string
+  teamId: string
 }
 
 export interface ISlackUserIdentifier {
-  user: string
-  team: string
+  userId: string
+  teamId: string
 }
 
 export interface ISlackEventEnvelope extends ISlackEnvelope {
@@ -70,6 +76,7 @@ export interface ISlackEvent {
   event_ts?: string
   user?: string
   channel?: string | any
+  thread_ts?: string
 }
 
 export interface ISlackMessageEvent extends ISlackEvent {

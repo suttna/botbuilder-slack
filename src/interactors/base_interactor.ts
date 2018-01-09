@@ -24,8 +24,8 @@ export abstract class BaseInteractor<Envelope extends ISlackEnvelope | ISlackOAu
       return null
     }
 
-    const botId        = utils.decomposeUserId(botbuilderBotId)
-    const userIdentity = utils.buildUserIdentity(userId, botId.team)
+    const botIdentity  = utils.decomposeUserId(botbuilderBotId)
+    const userIdentity = utils.buildUserIdentity(userId, botIdentity.teamId)
 
     const [cachedUser] = await this.settings.dataCache.findUsers([userIdentity.id])
 
