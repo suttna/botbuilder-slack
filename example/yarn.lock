@@ -65,9 +65,9 @@
   version "8.5.5"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.5.tgz#6f9e8164ae1a55a9beb1d2571cfb7acf9d720c61"
 
-"@types/restify@5.0.6":
-  version "5.0.6"
-  resolved "https://registry.yarnpkg.com/@types/restify/-/restify-5.0.6.tgz#bbc363133048c7b4ba684b7d94f27c0ee6d1d776"
+"@types/restify@5.0.7":
+  version "5.0.7"
+  resolved "https://registry.yarnpkg.com/@types/restify/-/restify-5.0.7.tgz#09b736ad96af04814f9501b7b50e84dabcd77228"
   dependencies:
     "@types/bunyan" "*"
     "@types/node" "*"
