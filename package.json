@@ -40,7 +40,7 @@
     "@types/nock": "9.1.1",
     "@types/node": "8.5.8",
     "@types/qs": "6.5.1",
-    "@types/ws": "3.2.1",
+    "@types/ws": "4.0.0",
     "codecov": "3.0.0",
     "jest": "22.0.6",
     "nock": "9.1.6",
