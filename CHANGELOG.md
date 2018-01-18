@@ -1,5 +1,35 @@
 # Change Log
 
+## [v2.0.0](https://github.com/suttna/botbuilder-slack/tree/v2.0.0) (2018-01-18)
+[Full Changelog](https://github.com/suttna/botbuilder-slack/compare/v1.1.1...v2.0.0)
+
+**Merged pull requests:**
+
+- Update dependency @types/node to v8.5.9 [\#60](https://github.com/suttna/botbuilder-slack/pull/60) ([renovate[bot]](https://github.com/apps/renovate))
+- Migrate CI to node 9.3.0 [\#58](https://github.com/suttna/botbuilder-slack/pull/58) ([bilby91](https://github.com/bilby91))
+- Update dependency jest to v22.1.1 [\#57](https://github.com/suttna/botbuilder-slack/pull/57) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency @types/ws to v4 [\#56](https://github.com/suttna/botbuilder-slack/pull/56) ([renovate[bot]](https://github.com/apps/renovate))
+- Remove docs generation temporary [\#55](https://github.com/suttna/botbuilder-slack/pull/55) ([bilby91](https://github.com/bilby91))
+- Update dependency tslint to v5.9.1 [\#54](https://github.com/suttna/botbuilder-slack/pull/54) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency @types/jest to v22.0.1 [\#52](https://github.com/suttna/botbuilder-slack/pull/52) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency @types/restify to v5.0.7 [\#51](https://github.com/suttna/botbuilder-slack/pull/51) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency @types/node to v8.5.8 [\#50](https://github.com/suttna/botbuilder-slack/pull/50) ([renovate[bot]](https://github.com/apps/renovate))
+- Add startThread [\#49](https://github.com/suttna/botbuilder-slack/pull/49) ([santiagodoldan](https://github.com/santiagodoldan))
+- Update dependency jest to v22.0.6 [\#48](https://github.com/suttna/botbuilder-slack/pull/48) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency nock to v9.1.6 [\#47](https://github.com/suttna/botbuilder-slack/pull/47) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency ts-jest to v22.0.1 [\#45](https://github.com/suttna/botbuilder-slack/pull/45) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency @types/node to v8.5.5 [\#41](https://github.com/suttna/botbuilder-slack/pull/41) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency @types/jest to v22 [\#40](https://github.com/suttna/botbuilder-slack/pull/40) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency ts-jest to v22 [\#39](https://github.com/suttna/botbuilder-slack/pull/39) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency jest to v22 [\#38](https://github.com/suttna/botbuilder-slack/pull/38) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency codecov to v3 [\#37](https://github.com/suttna/botbuilder-slack/pull/37) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency ts-node to v4 [\#34](https://github.com/suttna/botbuilder-slack/pull/34) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency restify to ^6.0.0 [\#33](https://github.com/suttna/botbuilder-slack/pull/33) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency typedoc to v0.9.0 [\#32](https://github.com/suttna/botbuilder-slack/pull/32) ([renovate[bot]](https://github.com/apps/renovate))
+- Bump typescript [\#31](https://github.com/suttna/botbuilder-slack/pull/31) ([bilby91](https://github.com/bilby91))
+- Pin Dependencies [\#30](https://github.com/suttna/botbuilder-slack/pull/30) ([renovate[bot]](https://github.com/apps/renovate))
+- Configure Renovate [\#28](https://github.com/suttna/botbuilder-slack/pull/28) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [v1.1.1](https://github.com/suttna/botbuilder-slack/tree/v1.1.1) (2017-12-26)
 [Full Changelog](https://github.com/suttna/botbuilder-slack/compare/v1.1.0...v1.1.1)
 
