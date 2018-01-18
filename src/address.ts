@@ -1,5 +1,6 @@
 import { IAddress, IIdentity } from "botbuilder"
 import { ISlackAddress } from "./slack_connector"
+import * as utils from "./utils"
 
 export interface IIsAddress {
   toAddress(): IAddress
@@ -10,6 +11,7 @@ export class Address {
 
   private teamId: string
   private channelId?: string
+  private threadTs?: string
 
   constructor(teamId: string) {
     this.teamId = teamId
@@ -17,37 +19,46 @@ export class Address {
     this.data.channelId = "slack"
   }
 
-  public id(id: string) {
+  public id(id: string): Address {
     this.data.id = id
 
     return this
   }
 
-  public channel(channel: string) {
+  public thread(ts: string): Address {
+    this.threadTs = ts
+
+    return this
+  }
+
+  public channel(channel: string): Address {
     this.channelId = channel
 
     return this
   }
 
-  public user(user: string, name?: string) {
+  public user(user: string, name?: string): Address {
     this.data.user = buildIdentity(user, this.teamId, name)
 
     return this
   }
 
-  public bot(bot: string, name?: string) {
+  public bot(bot: string, name?: string): Address {
     this.data.bot = buildIdentity(bot, this.teamId, name)
 
     return this
   }
 
-  public toAddress() {
+  public toAddress(): IAddress {
     if (!this.data.bot || !this.data.user) {
       throw new Error("Invalid address")
     }
 
     if (this.channelId) {
-      this.data.conversation = buildConversationIdentity(this.channelId, this.data.bot.id)
+      const messageId = this.threadTs || this.data.id
+      const { botId, teamId } = utils.decomposeBotId(this.data.bot.id)
+
+      this.data.conversation = utils.buildConversationIdentity(botId, teamId, this.channelId, messageId)
     }
 
     return this.data
@@ -64,17 +75,4 @@ export function buildIdentity(userId: string, teamId: string, name?: string): II
   }
 
   return identity
-}
-
-export function buildConversationIdentity(slackChannelId: string, botId: string): IIdentity {
-  return {
-    id: `${botId}:${slackChannelId}`,
-    isGroup: isGroupConversation(slackChannelId),
-  }
-}
-
-export function isGroupConversation(slackChannelId: string): boolean {
-  const channelType = slackChannelId[0]
-
-  return channelType === "C" || channelType === "G"
 }

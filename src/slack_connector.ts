@@ -104,44 +104,50 @@ export class SlackConnector implements IConnector {
   }
 
   public send(messages: IMessage[], cb: (err: Error, addresses?: IAddress[]) => void) {
-    Bluebird.map<IMessage, IAddress>(messages, async (message, index, length) => {
-      const address = message.address
+    Bluebird.map<IMessage, IAddress>(
+      messages, async (message, index, length) => {
+        const address = message.address
 
-      // Ignore endOfConversation. We can potencially call im.close on the future
-      if (message.type === "endOfConversation") {
-        return address
-      }
-
-      const { team, channel } = utils.decomposeConversationId(address.conversation.id)
-
-      const client = await this.createClient(team)
-
-      if ((!message.text || message.text === "") && !message.attachments) {
-        throw new Error("Messages without content are not allowed.")
-      } else {
-        const slackMessage = utils.buildSlackMessage(channel, message)
-        const response = await client.chat.postMessage(channel, "", slackMessage)
-
-        if (response.ok) {
-          return {
-            ...address,
-            id: response.ts,
-          }
-        } else {
-          throw new Error(response.message)
+        // Ignore endOfConversation. We can potencially call im.close on the future
+        if (message.type === "endOfConversation") {
+          return address
         }
-      }
-    }, { concurrency: 1 })
-    .then((x) => cb(null, x))
-    .catch((err) => cb(err, null))
+
+        const { botId, teamId, channelId } = utils.decomposeConversationId(address.conversation.id)
+
+        const client = await this.createClient(teamId)
+
+        if ((!message.text || message.text === "") && !message.attachments) {
+          throw new Error("Messages without content are not allowed.")
+        } else {
+          const slackMessage = utils.buildSlackMessage(message)
+          const response     = await client.chat.postMessage(channelId, "", slackMessage)
+          const conversation = utils.buildConversationIdentity(botId, teamId, channelId, response.ts)
+
+          if (response.ok) {
+            return {
+              ...address,
+              conversation,
+              id: response.ts,
+            }
+          } else {
+            throw new Error(response.message)
+          }
+        }
+      },
+      {
+        concurrency: 1,
+      },
+    ).then((x) => cb(null, x), (err) => cb(err, null))
   }
 
   public startConversation(address: IAddress, cb: (err: Error, address?: IAddress) => void) {
     this.startDirectMessage(address.user.id)
       .then((d) => {
+        const { botId, teamId } = utils.decomposeBotId(address.bot.id)
         const newAddress = {
           ...address,
-          conversation: utils.buildConversationIdentity(d.channel.id, address.bot.id),
+          conversation: utils.buildConversationIdentity(botId, teamId, d.channel.id),
         }
 
         cb(null, newAddress)
@@ -151,12 +157,12 @@ export class SlackConnector implements IConnector {
 
   public update(message: IMessage, done: (err: Error, address?: IAddress) => void) {
     const address = message.address as ISlackAddress
-    const { team, channel } = utils.decomposeConversationId(address.conversation.id)
+    const { teamId, channelId } = utils.decomposeConversationId(address.conversation.id)
 
-    this.createClient(team)
+    this.createClient(teamId)
       .then(async (client) => {
-        const slackMessage = utils.buildSlackMessage(channel, message)
-        const response = await client.chat.update(address.id, channel, "", slackMessage)
+        const slackMessage = utils.buildSlackMessage(message)
+        const response = await client.chat.update(address.id, channelId, "", slackMessage)
 
         if (response.ok) {
           done(null, message.address)
@@ -167,14 +173,34 @@ export class SlackConnector implements IConnector {
   }
 
   public delete(address: ISlackAddress, done: (err: Error) => void) {
-    const { team, channel } = utils.decomposeConversationId(address.conversation.id)
+    const { teamId, channelId } = utils.decomposeConversationId(address.conversation.id)
 
-    this.createClient(team)
+    this.createClient(teamId)
       .then(async (client) => {
-        const response = await client.chat.delete(address.id, channel)
+        const response = await client.chat.delete(address.id, channelId)
 
         done(response.ok ? null : new Error(response.error))
       })
+  }
+
+  public async startDirectMessage(userId: string): Promise<ImOpenResult> {
+    const [slackUserId, teamId] = userId.split(":")
+
+    const client = await this.createClient(teamId)
+
+    return client.im.open(slackUserId)
+  }
+
+  public startReplyChain(message: IMessage): Promise<IAddress> {
+    return new Promise((resolve, reject) => {
+      this.send([message], (err, addresses) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(addresses[0])
+        }
+      })
+    })
   }
 
   public async getGeneralConversation(teamId: string): Promise<PartialChannelResult> {
@@ -201,12 +227,12 @@ export class SlackConnector implements IConnector {
   }
 
   public async getMemberList(conversationId: string): Promise<FullUserResult[]> {
-    const { team } = utils.decomposeConversationId(conversationId)
+    const { teamId } = utils.decomposeConversationId(conversationId)
 
     const channel = await this.getChannel(conversationId)
 
     return Promise.all(channel.members.map((id) => {
-      return this.getUser(team, id)
+      return this.getUser(teamId, id)
     }))
   }
 
@@ -217,18 +243,10 @@ export class SlackConnector implements IConnector {
   }
 
   public async getTeam(address: IAddress): Promise<FullTeamResult> {
-    const { team } = utils.decomposeUserId(address.user.id)
-    const client = await this.createClient(team)
-
-    return (await client.team.info()).team
-  }
-
-  public async startDirectMessage(userId: string): Promise<ImOpenResult> {
-    const [slackUserId, teamId] = userId.split(":")
-
+    const { teamId } = utils.decomposeUserId(address.user.id)
     const client = await this.createClient(teamId)
 
-    return client.im.open(slackUserId)
+    return (await client.team.info()).team
   }
 
   private dispatchEvents(events: IEvent[]) {
@@ -265,15 +283,15 @@ export class SlackConnector implements IConnector {
   }
 
   private async getChannel(conversationId: string): Promise<FullChannelResult> {
-    const { team, channel } = utils.decomposeConversationId(conversationId)
+    const { teamId, channelId } = utils.decomposeConversationId(conversationId)
 
-    const client = await this.createClient(team)
+    const client = await this.createClient(teamId)
 
-    switch (channel[0]) {
+    switch (channelId[0]) {
       case "C":
-        return client.channels.info(channel).then((r) => r.channel)
+        return client.channels.info(channelId).then((r) => r.channel)
       case "G":
-        return client.groups.info(channel).then((r) => r.group)
+        return client.groups.info(channelId).then((r) => r.group)
     }
   }
 

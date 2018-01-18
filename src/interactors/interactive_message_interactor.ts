@@ -16,10 +16,11 @@ export class InteractiveMessageInteractor extends BaseInteractor<ISlackInteracti
     const botIdentity = utils.decomposeUserId(botIdentifier)
     const userIdentity = await this.buildUser(botIdentifier, this.envelope.user.id)
 
-    const address = new Address(botIdentity.team)
+    const address = new Address(botIdentity.teamId)
       .user(this.envelope.user.id, userIdentity.name)
       .channel(this.envelope.channel.id)
-      .bot(botIdentity.user, this.settings.botName)
+      .bot(botIdentity.userId, this.settings.botName)
+      .thread(this.envelope.original_message.thread_ts)
       .id(this.envelope.message_ts)
 
     const sourceEvent = this.buildInteractiveMessageSourceEvent(token)

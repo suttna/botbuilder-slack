@@ -22,9 +22,9 @@ export class CommandInteractor extends BaseInteractor<ISlackCommandEnvelope> {
     const botIdentity = utils.decomposeUserId(botIdentifier)
     const userIdentity = await this.buildUser(botIdentifier, this.envelope.user_id)
 
-    const address = new Address(botIdentity.team)
+    const address = new Address(botIdentity.teamId)
       .user(this.envelope.user_id, userIdentity.name)
-      .bot(botIdentity.user, this.settings.botName)
+      .bot(botIdentity.userId, this.settings.botName)
       .channel(this.envelope.channel_id)
 
     return new CommandEvent()
