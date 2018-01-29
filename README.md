@@ -103,6 +103,15 @@ You need to setup a URL that will listen for interactive message callbacks. Look
 
 You need to setup a URL that will listen for commands. Look at the usage example to have a better understanding.
 
+```javascript
+bot.on("slackCommand", (event) => {
+  const commandName = context.sourceEvent.SlackMessage.command
+  const dialogName = commandName.split("/")[1]
+  
+  bot.beginDialog(event.address, `${dialogName}:/`)
+})
+```
+
 ### Threads
 
 By default, replies to user's messages are threaded. This means that if you want to have an unthreaded conversation with a user you will need to manually change the address. This mimics what Microsoft Teams does. A conversation id will look like this `BXXX:TXXX:CXXX;messageid=123456`.
