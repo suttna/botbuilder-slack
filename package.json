@@ -31,7 +31,7 @@
     "connector"
   ],
   "dependencies": {
-    "@slack/client": "^3.13.0",
+    "@slack/client": "^4.0.0",
     "botbuilder": "^3.9.1"
   },
   "devDependencies": {
