@@ -14,5 +14,18 @@
   },
   "include": [
     "./src/**/*"
-  ]
+  ],
+  "typedocOptions": {
+    "mode": "file",
+    "out": "docs",
+    "exclude": "__test__",
+    "theme": "minimal",
+    "gaID": "UA-102232188-2",
+    "hideGenerator": true,
+    "readme": "README.md",
+    "name": "BotBuilder Slack",
+    "ignoreCompilerErrors": false,
+    "excludePrivate": true,
+    "excludeNotExported": true,
+  }
 }
