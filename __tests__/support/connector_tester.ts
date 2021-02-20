@@ -95,7 +95,7 @@ export class ConnectorTester {
       this.handler.bind(this.connector)()(new requestMock(), new responseMock(), () => {
         this.expectations.forEach((expectation) => expectation())
 
-        resolve()
+        resolve(undefined)
       })
     })
   }

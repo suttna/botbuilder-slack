@@ -1,6 +1,6 @@
 {
   "name": "botbuilder-slack",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Slack Connector for botbuilder. Compatibe with Microsoft Slack connector.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -31,15 +31,15 @@
     "connector"
   ],
   "dependencies": {
-    "@slack/client": "^3.13.0",
+    "@slack/client": "3.16.0",
     "botbuilder": "^3.9.1"
   },
   "devDependencies": {
     "@types/bluebird": "3.5.20",
     "@types/jest": "^22.2.0",
     "@types/lodash": "^4.14.105",
+    "@types/node": "12.12.6",
     "@types/nock": "9.1.1",
-    "@types/node": "9.4.3",
     "@types/qs": "6.5.1",
     "@types/ws": "4.0.0",
     "codecov": "3.0.0",

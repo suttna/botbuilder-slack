@@ -1,0 +1,67 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@2
+
+defaults: &defaults
+  docker:
+    - image: circleci/node:12.14.1
+      environment:
+        NODE_ENV: test
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+          cache-key: "yarn.lock"
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+          cache-key: "yarn.lock"
+      - run:
+          name: Run test suite
+          command: yarn run test
+  deploy:
+    <<: *defaults
+    steps:
+      - run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/.npmrc
+      - checkout
+      - run:
+          name: Publish package
+          command: npm publish
+  docs:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Publish documentation
+          command: scripts/docs.sh
+workflows:
+  build-deploy:
+    jobs:
+      - build
+      - test
+      - deploy:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - docs:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only: master
