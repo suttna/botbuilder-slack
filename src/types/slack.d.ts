@@ -28,6 +28,7 @@ declare module '@slack/client' {
     auth: WebApiAuth;
     bots: WebApiBots;
     channels: WebApiChannels;
+    conversations: WebApiConversations;
     chat: WebApiChat;
     dnd: WebApiDnd;
     emoji: WebApiEmoji;
@@ -528,6 +529,13 @@ declare module '@slack/client' {
     info(callback: (err: Error, result: BotsInfoResult) => void): void;
     info(opts: BotsInfoParams, callback: (err: Error, result: BotsInfoResult) => void): void;
     info(opts?: BotsInfoParams): Promise<BotsInfoResult>;
+  }
+
+  interface WebApiConversations {
+    info(channelId: string): Promise<WebApiResultAny>
+    list(opts?: Object): Promise<WebApiResultAny>
+    open(opts: Object): Promise<WebApiResultAny>
+    members(channelId: string): Promise<WebApiResultAny>;
   }
 
   interface WebApiChannels {

@@ -197,7 +197,7 @@ describe("SlackConnector", () => {
   describe("startConversation", () => {
     it("invokes the slack api", (done) => {
       const stub = nock("https://slack.com")
-        .post("/api/im.open", { user: "UXXX", token: "XXX" })
+        .post("/api/conversations.open", "users=UXXX&token=XXX")
         .reply(200, { ok: true, channel: { id: "DXXX" } })
 
       connector.startConversation(address, (err, newAddress) => {

@@ -51,7 +51,7 @@ export class EventInteractor extends BaseInteractor<ISlackEventEnvelope> {
 
   private async buildMessageEvent(botId: string, token: string): Promise<IEvent> {
     // FIXME: This is far from ideal. Temporary solution.
-    const botUserId    = this.envelope.authed_users[0]
+    const botUserId    = this.envelope.authorizations.find((user) => user.is_bot).user_id
     const sourceEvent  = this.buildMessageSourceEvent(token)
     const botIdentity  = utils.decomposeUserId(botId)
     const userIdentity = await this.buildUser(botId, this.event.user)

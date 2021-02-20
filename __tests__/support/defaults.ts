@@ -27,7 +27,7 @@ export const defaultMessageEnvelope = {
   team_id: "TXXX",
   api_app_id: "A60LNSDMF",
   type: "event_callback",
-  authed_users: [ "U61947K6Y" ],
+  authorizations: [ { user_id: "U61947K6Y", is_bot: true }],
   event_id: "Ev71RC55GS",
   event_time: 1505227601,
 }

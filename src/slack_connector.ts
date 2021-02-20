@@ -1,5 +1,5 @@
 import {
-  FullChannelResult, FullTeamResult, FullUserResult, ImOpenResult, PartialChannelResult, WebClient,
+  FullChannelResult, FullTeamResult, FullUserResult, PartialChannelResult, WebApiResultAny, WebClient,
 } from "@slack/client"
 import * as Bluebird from "bluebird"
 import { IAddress, IConnector, IEvent, IMessage } from "botbuilder"
@@ -183,12 +183,14 @@ export class SlackConnector implements IConnector {
       })
   }
 
-  public async startDirectMessage(userId: string): Promise<ImOpenResult> {
+  public async startDirectMessage(userId: string): Promise<WebApiResultAny> {
     const [slackUserId, teamId] = userId.split(":")
 
     const client = await this.createClient(teamId)
 
-    return client.im.open(slackUserId)
+    return client
+      .conversations
+      .open({users: slackUserId})
   }
 
   public startReplyChain(message: IMessage): Promise<IAddress> {
@@ -219,19 +221,19 @@ export class SlackConnector implements IConnector {
   public async getConversationList(teamId: string): Promise<PartialChannelResult[]> {
     const client = await this.createClient(teamId)
 
-    return Promise.all([
-      client.channels.list().then((r) => r.channels),
-      client.groups.list().then((r) => r.groups),
-    ])
-    .then(([channels, groups]) => channels.concat(groups))
+    return client.conversations
+    .list()
+    .then((r) => r.channels)
   }
 
   public async getMemberList(conversationId: string): Promise<FullUserResult[]> {
     const { teamId } = utils.decomposeConversationId(conversationId)
+    const client = await this.createClient(teamId)
 
     const channel = await this.getChannel(conversationId)
+    const members: string[] = (await client.conversations.members(channel.id)).members
 
-    return Promise.all(channel.members.map((id) => {
+    return Promise.all(members.map((id) => {
       return this.getUser(teamId, id)
     }))
   }
@@ -287,12 +289,10 @@ export class SlackConnector implements IConnector {
 
     const client = await this.createClient(teamId)
 
-    switch (channelId[0]) {
-      case "C":
-        return client.channels.info(channelId).then((r) => r.channel)
-      case "G":
-        return client.groups.info(channelId).then((r) => r.group)
-    }
+    return client
+      .conversations
+      .info(channelId)
+      .then((r) => r.channel)
   }
 
   private async createClient(teamId?: string): Promise<WebClient> {

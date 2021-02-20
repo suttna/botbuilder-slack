@@ -51,7 +51,7 @@ export interface ISlackEventEnvelope extends ISlackEnvelope {
   api_app_id?: string
   event?: ISlackEvent
   type: string
-  authed_users?: string[]
+  authorizations: any[]
   event_id?: string
   event_time?: number
   challenge?: string
